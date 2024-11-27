@@ -23,7 +23,8 @@ function init() {
     background: true, // 背景
     follow: false, // 追跡
     birdsEye: false, // 俯瞰
-    course: false,//コース
+    course1: false,//npcコース1
+    course2: false,//npcコース2
     axes: false, // 座標軸
   };
 
@@ -36,9 +37,10 @@ function init() {
     })
   });
   gui.add(param, "background").name("背景");
-  gui.add(param, "follow").name("追跡");
+  gui.add(param, "follow").name("追跡(後で消す)");
   gui.add(param, "birdsEye").name("俯瞰");
-  gui.add(param, "course").name("コース");
+  gui.add(param, "course1").name("コース1");
+  gui.add(param, "course2").name("コース2");
   gui.add(param, "axes").name("座標軸");
 
   // シーン作成
@@ -72,9 +74,13 @@ function init() {
   const orbitControls = new OrbitControls(camera, renderer.domElement);
   orbitControls.enableDumping = true;
   
-  // ロボットの追加
-  const myavatar = makeCBRobot();
-  scene.add(myavatar);
+  // meとnpc1,2の追加
+  const npc1 = makeCBRobot();
+  const npc2 = makeCBRobot();
+  const me = makeCBRobot();//////////////////////////////meは違うアバターにする
+  scene.add(npc1);
+  scene.add(npc2);
+  scene.add(me);
 
   // 背景の設定
   let renderTarget;
@@ -111,9 +117,9 @@ function init() {
   // 構造物の作成
   const buildings = new THREE.Group();
   {
-    const w = 10;
+    const w = 20;
     const h = 20;
-    const d = 10;
+    const d = 20;
     const gap = 30;
     const n = 3;
     for(let c=0;c<n;c++){
@@ -144,27 +150,27 @@ function init() {
 
   // 平面の作成
   const plane = new THREE.Mesh(
-    new THREE.PlaneGeometry(200, 200),
-    new THREE.MeshLambertMaterial({ color: 0x404040 }));
+    new THREE.PlaneGeometry(300, 300),
+    new THREE.MeshLambertMaterial({ color: 0x7d582e }));
   plane.rotation.x = -Math.PI / 2;
   plane.position.y = -5;
   scene.add(plane);
 
-  // 自動操縦コースの設定
+  /////////////////////////////npc1のコースの設定
   // 制御点
-  const controlPoints = [
-    [-30, -10, 50],
-    [-30, -10, -50],
-    [-50, -10, -50],
-    [-50, -10, 50],
+  const controlPoints1 = [
+    [-30, -10, 80],
+    [-30, -10, -80],
+    [-80, -10, -80],
+    [-80, -10, 80],
   ]
   // コースの補間
   const p0 = new THREE.Vector3();
   const p1 = new THREE.Vector3();
-  const course = new THREE.CatmullRomCurve3(
-    controlPoints.map((p, i) => {
+  const course1 = new THREE.CatmullRomCurve3(
+    controlPoints1.map((p, i) => {
       p0.set(...p);
-      p1.set(...controlPoints[(i + 1) % controlPoints.length]);
+      p1.set(...controlPoints1[(i + 1) % controlPoints1.length]);
       return [
         (new THREE.Vector3()).copy(p0),
         (new THREE.Vector3()).lerpVectors(p0, p1, 1/3),
@@ -172,14 +178,43 @@ function init() {
       ];
     }).flat(), true
   )
+  /////////////////////////////npc2のコースの設定//////////時間があったら逆回転にする
+  // 制御点
+  const controlPoints2 = [
+    [30, -10, 80],
+    [30, -10, -80],
+    [80, -10, -80],
+    [80, -10, 80],
+  ]
+  const p2 = new THREE.Vector3();
+  const p3 = new THREE.Vector3();
+  const course2 = new THREE.CatmullRomCurve3(
+    controlPoints2.map((p, i) => {
+      p2.set(...p);
+      p3.set(...controlPoints2[(i + 1) % controlPoints2.length]);
+      return [
+        (new THREE.Vector3()).copy(p2),
+        (new THREE.Vector3()).lerpVectors(p2, p3, 1/3),
+        (new THREE.Vector3()).lerpVectors(p2, p3, 2/3),
+      ];
+    }).flat(), true
+  )
+  
+///////////////////npcend
 
   // コースの描画
-  const points = course.getPoints(300);
-  const courseObject = new THREE.Line(
-    new THREE.BufferGeometry().setFromPoints(points),
+  const points1 = course1.getPoints(300);
+  const points2 = course2.getPoints(300);
+  const courseObject1 = new THREE.Line(
+    new THREE.BufferGeometry().setFromPoints(points1),
     new THREE.LineBasicMaterial({ color: "red"})
   );
-  scene.add(courseObject);
+  const courseObject2 = new THREE.Line(
+    new THREE.BufferGeometry().setFromPoints(points2),
+    new THREE.LineBasicMaterial({ color: "blue"})
+  );
+  scene.add(courseObject1);
+  scene.add(courseObject2);
 
   // Windowサイズの変更処理
   window.addEventListener("resize", ()=>{
@@ -191,17 +226,23 @@ function init() {
   // 描画処理
   // 描画のための変数
   const clock = new THREE.Clock();
-  const myavatarPosition = new THREE.Vector3();
-  const myavatarTarget = new THREE.Vector3();
+  const npcPosition1 = new THREE.Vector3();
+  const npcTarget1 = new THREE.Vector3();
+  const npcPosition2 = new THREE.Vector3();
+  const npcTarget2 = new THREE.Vector3();
   const cameraPosition = new THREE.Vector3();
   // 描画関数
   function render() {
-    // myavatar の位置と向きの設定
+    // npc の位置と向きの設定
     const elapsedTime = clock.getElapsedTime() / 30;
-    course.getPointAt(elapsedTime % 1, myavatarPosition);
-    myavatar.position.copy(myavatarPosition);
-    course.getPointAt((elapsedTime+0.01) % 1, myavatarTarget);
-    myavatar.lookAt(myavatarTarget);
+    course1.getPointAt(elapsedTime % 1, npcPosition1);
+    course2.getPointAt(elapsedTime % 1, npcPosition2);
+    npc1.position.copy(npcPosition1);
+    npc2.position.copy(npcPosition2);
+    course1.getPointAt((elapsedTime+0.01) % 1, npcTarget1);
+    course2.getPointAt((elapsedTime+0.01) % 1, npcTarget2);
+    npc1.lookAt(npcTarget1);
+    npc2.lookAt(npcTarget2);
     // 背景の切り替え
     if(param.background) {
       scene.background = renderTarget.texture;
@@ -214,23 +255,24 @@ function init() {
  
     // カメラの位置の切り替え
     if(param.follow){
-      cameraPosition.lerpVectors(myavatarTarget, myavatarPosition, 4);
+      cameraPosition.lerpVectors(npcTarget2, npcPosition2, 4);
       camera.position.y += 2.5;
       camera.position.copy(cameraPosition);
-      camera.lookAt(myavatar.position);//自分を見る
+      camera.lookAt(npc2.position);//自分を見る
       camera.up.set(0,1,0);//カメラの上をy軸正の向きにする
     }else if(param.birdsEye){
       camera.position.set(0,150,0);//上空から
-      camera.lookAt(myavatar.position);//平面の中央を見る
+      camera.lookAt(npc2.position);//平面の中央を見る
       camera.up.set(0,0,-1);//カメラの上をz軸負の向きにする
     }
     else{
       camera.position.set(10,-10,10);//下空から
-      camera.lookAt(myavatar.position);//飛行機を見る
+      camera.lookAt(npc2.position);//飛行機を見る
       camera.up.set(0,1,0);//カメラの上をy軸正の向きにする
     }
     // コース表示の有無
-    courseObject.visible = param.course;
+    courseObject1.visible = param.course1;
+    courseObject2.visible = param.course2;
     // 座標表示の有無
     axes.visible = param.axes;
 
