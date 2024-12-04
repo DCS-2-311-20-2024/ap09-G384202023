@@ -5,7 +5,6 @@
 "use strict"; // 厳格モード
 
 import * as THREE from "three"
-
 const seg = 12; // 円や円柱の分割数
 const gap = 0.01; // 胸のマークなどを浮かせる高さ
 
@@ -77,7 +76,6 @@ export function makeCBRobot() {
     const head = new THREE.Group;
     const headGeometry = new THREE.BoxGeometry(headW,headH,headD);
     head.add(new THREE.Mesh(headGeometry,cardboardMaterial));
-  
     const circleGeometry = new THREE.CircleGeometry(eyeRad, seg);
     const eyeL = new THREE.Mesh(circleGeometry,blackMaterial);
     eyeL.position.set(-eyeSep/2,eyePos,headD/2+gap);
@@ -102,6 +100,9 @@ export function makeCBRobot() {
   
     head.position.y = legLen*1.3+bodyH;////////////////
     cardboardRobot.add(head);
+
+   
+  
   
     // 影についての設定
     cardboardRobot.children.forEach((child) =>{

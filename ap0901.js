@@ -1,6 +1,6 @@
 //
 // 応用プログラミング 第9,10回 自由課題 (ap0901.js)
-// G38400-2023 拓殖太郎
+// G38420-2023 大野彩花
 //
 "use strict"; // 厳格モード
 
@@ -9,11 +9,7 @@ import * as THREE from "three";
 import { GUI } from "ili-gui";
 import {OrbitControls} from "three/addons";
 import { makeCBRobot } from './myavatar.js';
-//import { GLTFLoader } from "three/addons";
-//import * as L1 from "./ap08L1.js";
-//import * as L2 from "./ap08L2.js";
-//import * as L3 from "./ap08L3.js";
-//import * as L4 from "./ap08L4.js";
+
 
 // ３Ｄページ作成関数の定義
 function init() {
@@ -26,6 +22,7 @@ function init() {
     course1: false,//npcコース1
     course2: false,//npcコース2
     axes: false, // 座標軸
+    freeView: true, //自由視点////変更点
   };
 
   // GUIコントローラの設定
@@ -36,12 +33,15 @@ function init() {
       building.material.opacity = param.opacity;
     })
   });
+  
+  
   gui.add(param, "background").name("背景");
   gui.add(param, "follow").name("追跡(後で消す)");
   gui.add(param, "birdsEye").name("俯瞰");
   gui.add(param, "course1").name("コース1");
   gui.add(param, "course2").name("コース2");
   gui.add(param, "axes").name("座標軸");
+  gui.add(param, "freeView").name("自由視点");////変更点
 
   // シーン作成
   const scene = new THREE.Scene();
@@ -59,9 +59,10 @@ function init() {
 
   // カメラの作成
   const camera = new THREE.PerspectiveCamera(
-    50, window.innerWidth/window.innerHeight, 0.1, 1000);
-  camera.position.set(10,5,20);
+    75, window.innerWidth/window.innerHeight, 0.1, 1000);
+  camera.position.set(100,50,100);
   camera.lookAt(0,0,0);
+  
 
   
   // レンダラの設定
@@ -70,14 +71,30 @@ function init() {
   renderer.setClearColor(0x102040)
   document.getElementById("output").appendChild(renderer.domElement);
 
-  // カメラの制御
+  // カメラの制御変更し、ユーザーが動かせるように
   const orbitControls = new OrbitControls(camera, renderer.domElement);
-  orbitControls.enableDumping = true;
+  /*orbitControls.enableDamping = true;
+  orbitControls.dampingFactor = 0.05; // スムーズな動き
+  orbitControls.screenSpacePanning = true; // 垂直方向のパン操作を禁止
+  orbitControls.maxPolarAngle = Math.PI; // カメラを自由に動かせるように
+  orbitControls.zoomSpeed = 0.5; // デフォルトは1.0
+  orbitControls.rotateSpeed = 0.8; // 回転の速さを調整 (デフォルトは1.0)
+  orbitControls.zoomSpeed = 0.8;   // ズームの速さを調整
+  orbitControls.panSpeed = 0.8;    // パン操作の速さを調整
+  orbitControls.enableZoom = true; // ズームを有効化
+  orbitControls.enablePan = true;  // パンを有効化
+  orbitControls.enableRotate = true; // 回転を有効化*/
+
+  //GUI の影響を減らすためにリスナーを追加
+  /*renderer.domElement.addEventListener('wheel', (event) => {
+    event.preventDefault();
+  });*/
   
   // meとnpc1,2の追加
   const npc1 = makeCBRobot();
   const npc2 = makeCBRobot();
   const me = makeCBRobot();//////////////////////////////meは違うアバターにする
+  me.position.set(0,-5,0);
   scene.add(npc1);
   scene.add(npc2);
   scene.add(me);
@@ -138,8 +155,9 @@ function init() {
           (d + gap) * (r - (n-1)/2)
         );
 
-        // 上真ん中と下真ん中は追加しない
-        if ((c === 1 && r === 0) || (c === 1 && r === 2)) {
+        //  真ん中は追加しないが、
+        //　低確率で真ん中上に祠を表示する。
+        if (c === 1) {
           continue;
         }
         buildings.add(building);
@@ -159,10 +177,10 @@ function init() {
   /////////////////////////////npc1のコースの設定
   // 制御点
   const controlPoints1 = [
-    [-30, -10, 80],
-    [-30, -10, -80],
-    [-80, -10, -80],
-    [-80, -10, 80],
+    [-30, -5, 80],
+    [-30, -5, -80],
+    [-80, -5, -80],
+    [-80, -5, 80],
   ]
   // コースの補間
   const p0 = new THREE.Vector3();
@@ -181,10 +199,10 @@ function init() {
   /////////////////////////////npc2のコースの設定//////////時間があったら逆回転にする
   // 制御点
   const controlPoints2 = [
-    [30, -10, 80],
-    [30, -10, -80],
-    [80, -10, -80],
-    [80, -10, 80],
+    [30, -5, 80],
+    [30, -5, -80],
+    [80, -5, -80],
+    [80, -5, 80],
   ]
   const p2 = new THREE.Vector3();
   const p3 = new THREE.Vector3();
@@ -226,13 +244,18 @@ function init() {
   // 描画処理
   // 描画のための変数
   const clock = new THREE.Clock();
+
   const npcPosition1 = new THREE.Vector3();
   const npcTarget1 = new THREE.Vector3();
   const npcPosition2 = new THREE.Vector3();
   const npcTarget2 = new THREE.Vector3();
+  const mePosition = new THREE.Vector3();
+  const meTarget = new THREE.Vector3();
+
   const cameraPosition = new THREE.Vector3();
   // 描画関数
   function render() {
+  
     // npc の位置と向きの設定
     const elapsedTime = clock.getElapsedTime() / 30;
     course1.getPointAt(elapsedTime % 1, npcPosition1);
@@ -255,26 +278,36 @@ function init() {
  
     // カメラの位置の切り替え
     if(param.follow){
-      cameraPosition.lerpVectors(npcTarget2, npcPosition2, 4);
-      camera.position.y += 2.5;
+      cameraPosition.lerpVectors(meTarget, mePosition, 0.1);
+      //camera.position.y += 2.5;
       camera.position.copy(cameraPosition);
-      camera.lookAt(npc2.position);//自分を見る
+      camera.lookAt(me.position);//自分を見る
       camera.up.set(0,1,0);//カメラの上をy軸正の向きにする
     }else if(param.birdsEye){
       camera.position.set(0,150,0);//上空から
-      camera.lookAt(npc2.position);//平面の中央を見る
+      camera.lookAt(me.position);//平面の中央を見る
       camera.up.set(0,0,-1);//カメラの上をz軸負の向きにする
     }
     else{
       camera.position.set(10,-10,10);//下空から
-      camera.lookAt(npc2.position);//飛行機を見る
+      camera.lookAt(me.position);//飛行機を見る
       camera.up.set(0,1,0);//カメラの上をy軸正の向きにする
     }
+
+    
+    
+    // Render関数内
+    orbitControls.enabled = param.freeView;
+
+    orbitControls.update();
     // コース表示の有無
     courseObject1.visible = param.course1;
     courseObject2.visible = param.course2;
     // 座標表示の有無
     axes.visible = param.axes;
+    
+    // OrbitControls を更新
+    //orbitControls.update();
 
     // 描画
     renderer.render(scene, camera);
