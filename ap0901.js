@@ -35,9 +35,9 @@ function init() {
   });
   
   
-  gui.add(param, "background").name("背景");
-  gui.add(param, "follow").name("追跡(後で消す)");
-  gui.add(param, "birdsEye").name("俯瞰");
+  gui.add(param, "background").name("背景(床が映らない)");
+  gui.add(param, "follow").name("追跡(未実装)");
+  gui.add(param, "birdsEye").name("俯瞰(未実装)");
   gui.add(param, "course1").name("コース1");
   gui.add(param, "course2").name("コース2");
   gui.add(param, "axes").name("座標軸");
