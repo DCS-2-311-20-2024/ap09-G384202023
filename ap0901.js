@@ -41,7 +41,7 @@ function init() {
   gui.add(param, "course1").name("コース1");
   gui.add(param, "course2").name("コース2");
   gui.add(param, "axes").name("座標軸");
-  gui.add(param, "freeView").name("自由視点");////変更点
+  gui.add(param, "freeView").name("自由視点(製作者確認用)");////変更点
 
   // シーン作成
   const scene = new THREE.Scene();
@@ -57,13 +57,22 @@ function init() {
   spotLight.castShadow = true;////
   scene.add(spotLight);
 
+  // meとnpc1,2の追加
+  const npc1 = makeCBRobot();
+  const npc2 = makeCBRobot();
+  const me = makeCBRobot();//////////////////////////////meは違うアバターにする
+  me.position.set(0,-5,0);
+  scene.add(npc1);
+  scene.add(npc2);
+  scene.add(me);
+
   // カメラの作成
   const camera = new THREE.PerspectiveCamera(
     75, window.innerWidth/window.innerHeight, 0.1, 1000);
-  camera.position.set(100,50,100);
-  camera.lookAt(0,0,0);
-  
+  camera.position.set(me.position.x, me.position.y+5, me.position.z-10);
+  camera.lookAt(me.position); // 自分を見る
 
+  
   
   // レンダラの設定
   const renderer = new THREE.WebGLRenderer();
@@ -73,31 +82,7 @@ function init() {
 
   // カメラの制御変更し、ユーザーが動かせるように
   const orbitControls = new OrbitControls(camera, renderer.domElement);
-  /*orbitControls.enableDamping = true;
-  orbitControls.dampingFactor = 0.05; // スムーズな動き
-  orbitControls.screenSpacePanning = true; // 垂直方向のパン操作を禁止
-  orbitControls.maxPolarAngle = Math.PI; // カメラを自由に動かせるように
-  orbitControls.zoomSpeed = 0.5; // デフォルトは1.0
-  orbitControls.rotateSpeed = 0.8; // 回転の速さを調整 (デフォルトは1.0)
-  orbitControls.zoomSpeed = 0.8;   // ズームの速さを調整
-  orbitControls.panSpeed = 0.8;    // パン操作の速さを調整
-  orbitControls.enableZoom = true; // ズームを有効化
-  orbitControls.enablePan = true;  // パンを有効化
-  orbitControls.enableRotate = true; // 回転を有効化*/
-
-  //GUI の影響を減らすためにリスナーを追加
-  /*renderer.domElement.addEventListener('wheel', (event) => {
-    event.preventDefault();
-  });*/
   
-  // meとnpc1,2の追加
-  const npc1 = makeCBRobot();
-  const npc2 = makeCBRobot();
-  const me = makeCBRobot();//////////////////////////////meは違うアバターにする
-  me.position.set(0,-5,0);
-  scene.add(npc1);
-  scene.add(npc2);
-  scene.add(me);
 
   // 背景の設定
   let renderTarget;
