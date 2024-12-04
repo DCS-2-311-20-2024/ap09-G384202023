@@ -238,8 +238,75 @@ function init() {
   const meTarget = new THREE.Vector3();
 
   const cameraPosition = new THREE.Vector3();
+
+
+
+  // キーボードの入力状態を管理するオブジェクト
+const keyState = {
+  up: false,
+  down: false,
+  left: false,
+  right: false,
+};
+
+// キーが押されたときの処理
+document.addEventListener('keydown', (event) => {
+  switch (event.key) {
+    case 'w': // 上に移動
+      keyState.up = true;
+      break;
+    case 's': // 下に移動
+      keyState.down = true;
+      break;
+    case 'a': // 左に移動
+      keyState.left = true;
+      break;
+    case 'd': // 右に移動
+      keyState.right = true;
+      break;
+  }
+});
+
+// キーが離されたときの処理
+document.addEventListener('keyup', (event) => {
+  switch (event.key) {
+    case 'w':
+      keyState.up = false;
+      break;
+    case 's':
+      keyState.down = false;
+      break;
+    case 'a':
+      keyState.left = false;
+      break;
+    case 'd':
+      keyState.right = false;
+      break;
+  }
+});
+
+// アバターを動かす関数を定義
+function moveMe() {
+  const speed = 0.2; // 移動速度を調整
+  
+  if (keyState.up) {
+    me.position.z += speed; // 前方向に移動
+  }
+  if (keyState.down) {
+    me.position.z -= speed; // 後ろ方向に移動
+  }
+  if (keyState.left) {
+    me.position.x += speed; // 左方向に移動
+  }
+  if (keyState.right) {
+    me.position.x -= speed; // 右方向に移動
+  }
+}
+
   // 描画関数
-  function render() {
+  function render() {/////////////////////render
+
+    moveMe(); // キー入力に応じてアバターを移動
   
     // npc の位置と向きの設定
     const elapsedTime = clock.getElapsedTime() / 30;
@@ -260,7 +327,7 @@ function init() {
       scene.background = null;
       plane.visible = true;
     }
- 
+    //////////////////////////////////未実装/////////
     // カメラの位置の切り替え
     // if(param.freeView==false || param.follow){
     //   cameraPosition.lerpVectors(meTarget, mePosition, 0.1);
