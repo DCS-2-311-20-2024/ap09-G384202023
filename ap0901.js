@@ -277,22 +277,24 @@ function init() {
     }
  
     // カメラの位置の切り替え
-    if(param.follow){
-      cameraPosition.lerpVectors(meTarget, mePosition, 0.1);
-      //camera.position.y += 2.5;
-      camera.position.copy(cameraPosition);
-      camera.lookAt(me.position);//自分を見る
-      camera.up.set(0,1,0);//カメラの上をy軸正の向きにする
-    }else if(param.birdsEye){
-      camera.position.set(0,150,0);//上空から
-      camera.lookAt(me.position);//平面の中央を見る
-      camera.up.set(0,0,-1);//カメラの上をz軸負の向きにする
-    }
-    else{
-      camera.position.set(10,-10,10);//下空から
-      camera.lookAt(me.position);//飛行機を見る
-      camera.up.set(0,1,0);//カメラの上をy軸正の向きにする
-    }
+    // if(param.freeView==false || param.follow){
+    //   cameraPosition.lerpVectors(meTarget, mePosition, 0.1);
+    //   //camera.position.y += 2.5;
+    //   camera.position.copy(cameraPosition);
+    //   camera.lookAt(me.position);//自分を見る
+    //   camera.up.set(0,1,0);//カメラの上をy軸正の向きにする
+    // }else if(param.birdsEye){
+    //   camera.position.set(0,150,0);//上空から
+    //   camera.lookAt(me.position);//平面の中央を見る
+    //   camera.up.set(0,0,-1);//カメラの上をz軸負の向きにする
+    // }
+    // else{
+    //   camera.position.set(0,0,-10);//下空から/////////////////ここで自分視点で確認できる
+    //   camera.lookAt(me.position);//飛行機を見る
+    //   camera.up.set(0,1,0);//カメラの上をy軸正の向きにする
+    // }
+    
+    
 
     
     
