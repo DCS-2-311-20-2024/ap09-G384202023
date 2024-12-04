@@ -346,23 +346,29 @@ function moveMe() {
     //   camera.up.set(0,1,0);//カメラの上をy軸正の向きにする
     // }
     
-    
+    if (param.follow) {
+      // カメラを `me` の後ろに設定
+      camera.position.set(me.position.x, me.position.y + 5, me.position.z);
+      //sacamera.rotation.set(me.rotation)// = Math.PI/4;
+      //camera.lookAt(me.position.x, me.position.y + 5, me.position.z+1); // `me` の位置を見る
+    }
+    if(param.follow==false) {
+      // `param.follow` が false の場合は自由視点を有効にする
+      //orbitControls.enableDamping = true;
+      orbitControls.update(); // カメラを操作できるように
+    }
+
 
     
     
     // Render関数内
     orbitControls.enabled = param.freeView;
-
-    orbitControls.update();
+    orbitControls.update();//////////////////////////ここでアップデート
     // コース表示の有無
     courseObject1.visible = param.course1;
     courseObject2.visible = param.course2;
     // 座標表示の有無
     axes.visible = param.axes;
-    
-    // OrbitControls を更新
-    //orbitControls.update();
-
     // 描画
     renderer.render(scene, camera);
     // 次のフレームでの描画要請
