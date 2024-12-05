@@ -9,7 +9,7 @@ import * as THREE from "three";
 import { GUI } from "ili-gui";
 import {OrbitControls} from "three/addons";
 import { makeCBRobot } from './myavatar.js';
-
+import { makeYatai } from './myavatar.js';
 
 // ３Ｄページ作成関数の定義
 function init() {
@@ -27,7 +27,7 @@ function init() {
 
   // GUIコントローラの設定
   const gui = new GUI();
-  gui.add(param, "opacity", 0.0,1.0).name("建物の透明度")
+  gui.add(param, "opacity", 0.0,1.0).name("建物の透明度(製作者用)")
   .onChange(() => {
     buildings.children.forEach((building) => {
       building.material.opacity = param.opacity;
@@ -57,7 +57,7 @@ function init() {
   spotLight.castShadow = true;////
   scene.add(spotLight);
 
-  // meとnpc1,2の追加
+  // meとnpc、たてもの追加
   const npc1 = makeCBRobot();
   const npc2 = makeCBRobot();
   const me = makeCBRobot();//////////////////////////////meは違うアバターにする
@@ -65,6 +65,11 @@ function init() {
   scene.add(npc1);
   scene.add(npc2);
   scene.add(me);
+
+  const Yatai = makeYatai();
+  Yatai.position.set(0,-5,0);
+  scene.add(Yatai);
+
 
   // カメラの作成
   const camera = new THREE.PerspectiveCamera(
@@ -184,10 +189,10 @@ function init() {
   /////////////////////////////npc2のコースの設定//////////時間があったら逆回転にする
   // 制御点
   const controlPoints2 = [
-    [30, -5, -80], // [30, -5, 80],
-    [30, -5, 80],// [30, -5, -80],
-    [80, -5, 80],// [80, -5, -80],
-    [80, -5, -80]// [80, -5, 80],
+    [30, -5, -80],
+    [30, -5, 80],
+    [80, -5, 80],
+    [80, -5, -80]
   ]
   const p2 = new THREE.Vector3();
   const p3 = new THREE.Vector3();
@@ -340,23 +345,37 @@ function moveMe() {
     //   camera.lookAt(me.position);//平面の中央を見る
     //   camera.up.set(0,0,-1);//カメラの上をz軸負の向きにする
     // }
-    // else{
+    // else{d
     //   camera.position.set(0,0,-10);//下空から/////////////////ここで自分視点で確認できる
     //   camera.lookAt(me.position);//飛行機を見る
     //   camera.up.set(0,1,0);//カメラの上をy軸正の向きにする
     // }
-    
     if (param.follow) {
-      // カメラを `me` の後ろに設定
-      camera.position.set(me.position.x, me.position.y + 5, me.position.z);
-      //sacamera.rotation.set(me.rotation)// = Math.PI/4;
-      //camera.lookAt(me.position.x, me.position.y + 5, me.position.z+1); // `me` の位置を見る
-    }
-    if(param.follow==false) {
+      // カメラを `me` の顔の位置に配置し、前を向くようにする
+      const faceOffset = new THREE.Vector3(me.position.x, me.position.y+10, me.position.z); // 顔の位置を設定
+      const facePosition = new THREE.Vector3().copy(me.position).add(faceOffset.clone().applyQuaternion(me.quaternion));
+      camera.position.copy(facePosition);
+      
+      // カメラが前を向くように設定
+      //const lookAtTarget = facePosition.clone().add(faceOffset.applyQuaternion(me.quaternion));
+      //camera.lookAt(lookAtTarget);
+      camera.up.set(0, 1, 0); // カメラの上を y 軸正の向きにする
+    } else {
       // `param.follow` が false の場合は自由視点を有効にする
-      //orbitControls.enableDamping = true;
       orbitControls.update(); // カメラを操作できるように
     }
+  
+    // if (param.follow) {
+    //   // カメラを `me` の後ろに設定
+    //   camera.position.set(me.position.x, me.position.y + 5, me.position.z);
+    //   //sacamera.rotation.set(me.rotation)// = Math.PI/4;
+    //   //camera.lookAt(me.position.x, me.position.y + 5, me.position.z+1); // `me` の位置を見る
+    // }
+    // if(param.follow==false) {
+    //   // `param.follow` が false の場合は自由視点を有効にする
+    //   //orbitControls.enableDamping = true;
+    //   orbitControls.update(); // カメラを操作できるように
+    // }
 
 
     
