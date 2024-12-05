@@ -10,6 +10,7 @@ import { GUI } from "ili-gui";
 import {OrbitControls} from "three/addons";
 import { makeCBRobot } from './myavatar.js';
 import { makeYatai } from './myavatar.js';
+import { makeFishYatai } from './myavatar.js';
 
 // ３Ｄページ作成関数の定義
 function init() {
@@ -66,9 +67,9 @@ function init() {
   scene.add(npc2);
   scene.add(me);
 
-  const Yatai = makeYatai();
-  Yatai.position.set(0,-5,0);
-  scene.add(Yatai);
+  const FishYatai = makeFishYatai();
+  FishYatai.position.set(0,-5,0);
+  scene.add(FishYatai);
 
 
   // カメラの作成
@@ -121,7 +122,7 @@ function init() {
     scene.add(light);
   }
 
-  // 構造物の作成
+  // 構造物の作成///////////////////////////////makeYataiにする
   const buildings = new THREE.Group();
   {
     const w = 20;

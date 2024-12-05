@@ -200,3 +200,155 @@ export function makeYatai() {
   // 再生結果を戻す
   return Yatai;
 }
+export function makeFishYatai(){
+  const FishYatai = new THREE.Group();
+  const Basic = makeYatai();
+  FishYatai.add(Basic);
+
+///////　ここからは追加物（の素材）
+const textureLoader = new THREE.TextureLoader();
+const photoTexture = textureLoader.load('fish.jpeg');
+//https://www.google.com/url?sa=i&url=https%3A%2F%2Fillustcenter.com%2F2021%2F11%2F24%2Frdesign_6204%2F&psig=AOvVaw3wuGW5VpHUs6J7sZV4CPzJ&ust=1733475586877000&source=images&cd=vfe&opi=89978449&ved=0CBcQjhxqFwoTCKj6vPmhkIoDFQAAAAAdAAAAABAE
+const photoMaterial = new THREE.MeshBasicMaterial({ map: photoTexture });
+const plainMaterial = new THREE.MeshBasicMaterial({ color: 0xcccccc });
+const materials = [
+  plainMaterial, // right
+  plainMaterial, // left
+  photoMaterial, // top
+  plainMaterial, // bottom
+  plainMaterial, // back
+  plainMaterial  // front
+];
+const daimaterial = new THREE.MeshPhongMaterial({ color: 0xDEB887 });
+//　add系
+const tableGeometry = new THREE.BoxGeometry(11.5, 4.5, 5);
+const table = new THREE.Mesh(tableGeometry, materials);
+table.position.set(0,2,4);
+FishYatai.add(table);
+const daiGeometry = new THREE.BoxGeometry(1.25, 0.2, 5);
+const dai = new THREE.Mesh(daiGeometry, daimaterial);
+dai.position.set(0,4.35,4);
+FishYatai.add(dai);
+
+///////小物
+function makepinkPoi() {
+  const group = new THREE.Group(); // ポイ全体のグループ
+
+  // === フレーム部分 ===
+  const frameGeometry = new THREE.TorusGeometry(0.4, 0.05, 16, 100); // 外側の枠 (半径0.4で0.8×0.8相当)
+  const frameMaterial = new THREE.MeshBasicMaterial({ color: 0xFFD1DC }); // ピンク
+  const frame = new THREE.Mesh(frameGeometry, frameMaterial);
+  frame.rotation.x = Math.PI / 2; // 正面に向ける
+  group.add(frame);
+
+  // === 紙の部分 ===
+  const paperGeometry = new THREE.CircleGeometry(0.4, 64); // 枠の内側の紙 (半径0.4)
+  const paperMaterial = new THREE.MeshBasicMaterial({
+    color: 0xffffff,
+    transparent: true,
+    opacity: 0.5, // 半透明
+  });
+  const paper = new THREE.Mesh(paperGeometry, paperMaterial);
+  paper.rotation.x = -Math.PI / 2; // 正面に向ける
+  paper.position.z = 0.01; // 枠に重ならないよう少し前に出す
+  group.add(paper);
+
+  // === ハンドル部分 ===
+  const handleGeometry = new THREE.CylinderGeometry(0.05, 0.05, 0.6, 36); // 小さい持ち手
+  const handleMaterial = new THREE.MeshBasicMaterial({ color: 0xFFD1DC }); // 茶色
+  const handle = new THREE.Mesh(handleGeometry, handleMaterial);
+  handle.rotation.z = Math.PI/2; // 持ち手の角度をつける
+  handle.rotation.y = Math.PI/4;
+  handle.position.set(-0.5, 0, 0.5); // 持ち手の位置を調整
+  group.add(handle);
+
+  return group; // 完成したポイを返す
+}
+function makeskyPoi() {
+  const group = new THREE.Group(); // ポイ全体のグループ
+
+  // === フレーム部分 ===
+  const frameGeometry = new THREE.TorusGeometry(0.4, 0.05, 16, 100); // 外側の枠 (半径0.4で0.8×0.8相当)
+  const frameMaterial = new THREE.MeshBasicMaterial({ color: 0xB8F8FB }); // ピンク
+  const frame = new THREE.Mesh(frameGeometry, frameMaterial);
+  frame.rotation.x = Math.PI / 2; // 正面に向ける
+  group.add(frame);
+
+  // === 紙の部分 ===
+  const paperGeometry = new THREE.CircleGeometry(0.4, 64); // 枠の内側の紙 (半径0.4)
+  const paperMaterial = new THREE.MeshBasicMaterial({
+    color: 0xffffff,
+    transparent: true,
+    opacity: 0.5, // 半透明
+  });
+  const paper = new THREE.Mesh(paperGeometry, paperMaterial);
+  paper.rotation.x = -Math.PI / 2; // 正面に向ける
+  paper.position.z = 0.01; // 枠に重ならないよう少し前に出す
+  group.add(paper);
+
+  // === ハンドル部分 ===
+  const handleGeometry = new THREE.CylinderGeometry(0.05, 0.05, 0.6, 36); // 小さい持ち手
+  const handleMaterial = new THREE.MeshBasicMaterial({ color: 0xB8F8FB }); // 茶色
+  const handle = new THREE.Mesh(handleGeometry, handleMaterial);
+  handle.rotation.z = Math.PI/2; // 持ち手の角度をつける
+  handle.rotation.y = Math.PI/4;
+  handle.position.set(-0.5, 0, 0.5); // 持ち手の位置を調整
+  group.add(handle);
+
+  return group; // 完成したポイを返す
+}
+
+// ポイをシーンに追加
+const pinkpoi = makepinkPoi();
+pinkpoi.position.set(0,4.5,6);
+FishYatai.add(pinkpoi);
+const skypoi = makeskyPoi();
+skypoi.rotation.y = Math.PI/2;
+skypoi.position.set(0,4.5,3);
+FishYatai.add(skypoi);
+
+  // 影についての設定
+  FishYatai.children.forEach((child) =>{
+    child.castShadow = true;
+    child.receiveShadow = true;
+  });
+
+  // 再生結果を戻す
+  return FishYatai;
+
+}
+/*
+export function makeFoodYatai(){
+  const FoodYatai = new THREE.Group();
+  const Basic = makeYatai();
+  FoodYatai.add(Basic);
+
+  // 影についての設定
+  FoodYatai.children.forEach((child) =>{
+    child.castShadow = true;
+    child.receiveShadow = true;
+  });
+
+  // 再生結果を戻す
+  return FoodYatai;
+
+}
+*/ 
+
+/*
+export function makeGunYatai(){
+  const GunYatai = new THREE.Group();
+  const Basic = makeYatai();
+  GunYatai.add(Basic);
+
+  // 影についての設定
+  GunYatai.children.forEach((child) =>{
+    child.castShadow = true;
+    child.receiveShadow = true;
+  });
+
+  // 再生結果を戻す
+  return GunYatai;
+
+}
+*/ 
