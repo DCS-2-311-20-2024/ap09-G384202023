@@ -41,7 +41,7 @@ function init() {
   gui.add(param, "course1").name("コース1");
   gui.add(param, "course2").name("コース2");
   gui.add(param, "axes").name("座標軸");
-  gui.add(param, "freeView").name("自由視点(製作者確認用)");////変更点
+  gui.add(param, "freeView").name("自由視点原点(製作者確認用)");////変更点
 
   // シーン作成
   const scene = new THREE.Scene();
@@ -184,10 +184,10 @@ function init() {
   /////////////////////////////npc2のコースの設定//////////時間があったら逆回転にする
   // 制御点
   const controlPoints2 = [
-    [30, -5, 80],
-    [30, -5, -80],
-    [80, -5, -80],
-    [80, -5, 80],
+    [30, -5, -80], // [30, -5, 80],
+    [30, -5, 80],// [30, -5, -80],
+    [80, -5, 80],// [80, -5, -80],
+    [80, -5, -80]// [80, -5, 80],
   ]
   const p2 = new THREE.Vector3();
   const p3 = new THREE.Vector3();
