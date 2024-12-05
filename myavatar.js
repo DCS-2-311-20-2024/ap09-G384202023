@@ -117,7 +117,7 @@ export function makeCBRobot() {
 export function makeYatai() {
   const Yatai = new THREE.Group();
   const FeMaterial = new THREE.MeshPhongMaterial({ color: 0x244344 });//鉄色
-  const WoodMaterial = new THREE.MeshPhongMaterial({ color: 0xDEB887 });//木材
+  const WoodMaterial = new THREE.MeshPhongMaterial({ color: 0xB22D35 });//垂れ幕
   const legW = 0.2; // 脚の幅
   const legD = 0.2; // 脚の奥行
   const legLen1 = 13.6; // 脚の長さ1
@@ -317,11 +317,75 @@ FishYatai.add(skypoi);
   return FishYatai;
 
 }
-/*
+/////////////////////////////////////////////たこ焼き
 export function makeFoodYatai(){
   const FoodYatai = new THREE.Group();
   const Basic = makeYatai();
   FoodYatai.add(Basic);
+
+  const MacineMaterial = new THREE.MeshBasicMaterial({ color: 0x244344 });
+  const plainMaterial = new THREE.MeshBasicMaterial({ color: 0xB22D35 });
+  const materials = [
+    plainMaterial, // right
+    plainMaterial, // left
+    MacineMaterial, // top
+    plainMaterial, // bottom
+    plainMaterial, // back
+    plainMaterial  // front
+  ];
+  const tableGeometry = new THREE.BoxGeometry(11.5, 4.5, 5);
+  const table = new THREE.Mesh(tableGeometry, materials);
+  table.position.set(0,2,4);
+  FoodYatai.add(table);
+
+  // たこ焼き機の作成
+  const takoyakiMachineMaterial = new THREE.MeshPhongMaterial({ color: 0x281a14 }); // 黒っぽい色
+  const takoyakiMachineGeometry = new THREE.BoxGeometry(11.3, 1, 4.7);
+  const takoyakiMachine = new THREE.Mesh(takoyakiMachineGeometry, takoyakiMachineMaterial);
+  takoyakiMachine.position.set(0, 4, 4); // テーブルの上に配置
+  FoodYatai.add(takoyakiMachine);
+
+  // たこ焼き穴の作成
+  const holeMaterial = new THREE.MeshBasicMaterial({ color: 0x000000 }); // 穴の色
+  const holeGeometry = new THREE.CylinderGeometry(0.3, 0.3, 0.1, 32); // 半径0.3、高さ0.1の円柱
+  const holePositions = [];
+
+  // 穴の配置座標を計算 (3行×4列)
+  const machineTopY = 4.5 + 0.5; // たこ焼き機の上面より少し上に配置
+  for (let row = 0; row < 5; row++) {
+    for (let col = 0; col < 8; col++) {
+      const x = -2 + col * 1.3; // 横方向に配置
+      const z = 1 - row * 1;  // 縦方向に配置
+      holePositions.push([x, machineTopY, z]); // x, y, z
+    }
+  }
+
+  // 各穴を作成し、たこ焼き機に追加
+  holePositions.forEach(([x, y, z]) => {
+    const hole = new THREE.Mesh(holeGeometry, holeMaterial);
+    hole.position.set(x-2.7, y-4.53, z+1);
+    //hole.rotation.x = Math.PI / 2; // 円柱の向きを上に
+    takoyakiMachine.add(hole); // たこ焼き機に直接追加
+  });
+
+  // 後ろの台の作成
+  const daiMaterial = new THREE.MeshPhongMaterial({ color: 0xdeb887 });
+  const daiGeometry = new THREE.BoxGeometry(3, 4, 5);
+  const dai = new THREE.Mesh(daiGeometry, daiMaterial);
+  dai.position.set(-5, 2, -2);
+  FoodYatai.add(dai);
+
+  //////////小物///////////////////
+  function makeTakoyakiBoat() {
+    const group = new THREE.Group();
+    //紙作成
+    //繋げる
+    return group;
+  }
+  const takoyakiBoat = makeTakoyakiBoat();
+  takoyakiBoat.position.y=6;
+  FoodYatai.add(takoyakiBoat);
+
 
   // 影についての設定
   FoodYatai.children.forEach((child) =>{
@@ -333,7 +397,6 @@ export function makeFoodYatai(){
   return FoodYatai;
 
 }
-*/ 
 
 /*
 export function makeGunYatai(){

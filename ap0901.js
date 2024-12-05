@@ -11,6 +11,7 @@ import {OrbitControls} from "three/addons";
 import { makeCBRobot } from './myavatar.js';
 import { makeYatai } from './myavatar.js';
 import { makeFishYatai } from './myavatar.js';
+import { makeFoodYatai } from './myavatar.js';
 
 // ３Ｄページ作成関数の定義
 function init() {
@@ -37,7 +38,7 @@ function init() {
   
   
   gui.add(param, "background").name("背景(床が映らない)");
-  gui.add(param, "follow").name("追跡(未実装)");
+  gui.add(param, "follow").name("一人称視点(未実装)");
   gui.add(param, "birdsEye").name("俯瞰(未実装)");
   gui.add(param, "course1").name("コース1");
   gui.add(param, "course2").name("コース2");
@@ -67,10 +68,17 @@ function init() {
   scene.add(npc2);
   scene.add(me);
 
+  /*
   const FishYatai = makeFishYatai();
   FishYatai.position.set(0,-5,0);
   scene.add(FishYatai);
+  */
 
+  
+  const FoodYatai = makeFoodYatai();
+  FoodYatai.position.set(0,-5,0);
+  scene.add(FoodYatai);
+  
 
   // カメラの作成
   const camera = new THREE.PerspectiveCamera(
