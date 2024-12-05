@@ -70,7 +70,7 @@ function init() {
   const camera = new THREE.PerspectiveCamera(
     75, window.innerWidth/window.innerHeight, 0.1, 1000);
   camera.position.set(me.position.x, me.position.y+5, me.position.z-10);
-  camera.lookAt(me.position); // 自分を見る
+  //camera.lookAt(me.position); // 自分を見る
 
   
   
