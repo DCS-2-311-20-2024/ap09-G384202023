@@ -13,6 +13,7 @@ import { makeme } from './makeme.js';
 import { makeYatai } from './myavatar.js';
 import { makeFishYatai } from './myavatar.js';
 import { makeFoodYatai } from './myavatar.js';
+import { makeGunYatai } from './myavatar.js';
 
 // ３Ｄページ作成関数の定義
 function init() {
@@ -80,6 +81,12 @@ function init() {
   FoodYatai.position.set(0,-5,0);
   scene.add(FoodYatai);
   */
+
+  
+  const GunYatai = makeGunYatai();
+  GunYatai.position.set(0,-5,0);
+  scene.add(GunYatai);
+  
 
 
 

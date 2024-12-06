@@ -397,11 +397,84 @@ export function makeFoodYatai(){
 
 }
 
-/*
+
 export function makeGunYatai(){
   const GunYatai = new THREE.Group();
   const Basic = makeYatai();
   GunYatai.add(Basic);
+  //射的の銃
+  function makeGun(){
+    const group = new THREE.Group();
+
+    const woodMaterial = new THREE.MeshPhongMaterial({ color: 0xb89465 });
+    const w1Geometry = new THREE.BoxGeometry(3.5, 2, 1);
+    const w1 = new THREE.Mesh(w1Geometry, woodMaterial);
+    w1.position.set(-3,0,0);
+    group.add(w1);
+    const w2Geometry = new THREE.BoxGeometry(7, 2, 1);
+    const w2 = new THREE.Mesh(w2Geometry, woodMaterial);
+    w2.position.set(-1.2,-0.5,0);
+    w2.rotation.z = Math.PI/8;
+    group.add(w2);
+    const w3Geometry = new THREE.BoxGeometry(5, 1.8, 1);
+    const w3 = new THREE.Mesh(w3Geometry, woodMaterial);
+    w3.position.set(4,0.4,0);
+    group.add(w3);
+    const w4Geometry = new THREE.BoxGeometry(0.5, 1.8, 1);
+    const w4 = new THREE.Mesh(w4Geometry, woodMaterial);
+    w4.position.set(6.5,0.4,0);
+    w4.rotation.z = -Math.PI/10;
+    group.add(w4);
+
+    const FeMaterial = new THREE.MeshPhongMaterial({ color: 0xcccccc });
+    const f1Geometry = new THREE.CylinderGeometry(0.4, 0.4,10, 16, 16, false);
+    const f1 = new THREE.Mesh(f1Geometry, FeMaterial);
+    f1.position.set(6.7,1.5,0);
+    f1.rotation.z = Math.PI/2;
+    group.add(f1);
+
+    const f2Geometry = new THREE.BoxGeometry(0.5, 0.5, 0.4);
+    const f2 = new THREE.Mesh(f2Geometry, FeMaterial);
+    f2.position.set(11.2,1.8,0);
+    f2.rotation.z = Math.PI/4;
+    group.add(f2);
+
+    return group;
+  }
+  const gun1 = makeGun();
+  gun1.rotation.order = "YXZ"; // 回転の順序を変更
+  gun1.rotation.y = Math.PI / 2;
+  gun1.rotation.x = Math.PI / 2;
+  gun1.rotation.z = 0;
+  gun1.scale.set(0.4,0.2,0.2);
+  gun1.position.set(3,4.2,6);
+  GunYatai.add(gun1);
+
+  const gun2 = makeGun();
+  gun2.rotation.order = "YXZ"; // 回転の順序を変更
+  gun2.rotation.y = Math.PI / 2;
+  gun2.rotation.x = Math.PI / 2;
+  gun2.rotation.z = 0;
+  gun2.scale.set(0.4,0.2,0.2);
+  gun2.position.set(0,4.2,6);
+  GunYatai.add(gun2);
+
+  const gun3 = makeGun();
+  gun3.rotation.order = "YXZ"; // 回転の順序を変更
+  gun3.rotation.y = Math.PI / 2;
+  gun3.rotation.x = Math.PI / 2;
+  gun3.rotation.z = 0;
+  gun3.scale.set(0.4,0.2,0.2);
+  gun3.position.set(-3,4.2,6);
+  GunYatai.add(gun3);
+
+  //コルク
+
+  //景品棚
+  //景品
+  //射的の銃
+  //コルク
+
 
   // 影についての設定
   GunYatai.children.forEach((child) =>{
@@ -413,4 +486,4 @@ export function makeGunYatai(){
   return GunYatai;
 
 }
-*/ 
+
