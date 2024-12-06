@@ -9,6 +9,7 @@ import * as THREE from "three";
 import { GUI } from "ili-gui";
 import {OrbitControls} from "three/addons";
 import { makeCBRobot } from './myavatar.js';
+import { makeme } from './makeme.js';
 import { makeYatai } from './myavatar.js';
 import { makeFishYatai } from './myavatar.js';
 import { makeFoodYatai } from './myavatar.js';
@@ -62,7 +63,7 @@ function init() {
   // meとnpc、たてもの追加
   const npc1 = makeCBRobot();
   const npc2 = makeCBRobot();
-  const me = makeCBRobot();//////////////////////////////meは違うアバターにする
+  const me = makeme();
   me.position.set(0,-5,0);
   scene.add(npc1);
   scene.add(npc2);
@@ -74,17 +75,21 @@ function init() {
   scene.add(FishYatai);
   */
 
-  
+  /*
   const FoodYatai = makeFoodYatai();
   FoodYatai.position.set(0,-5,0);
   scene.add(FoodYatai);
-  
+  */
+
+
 
   // カメラの作成
   const camera = new THREE.PerspectiveCamera(
     75, window.innerWidth/window.innerHeight, 0.1, 1000);
-  camera.position.set(me.position.x, me.position.y+5, me.position.z-10);
-  //camera.lookAt(me.position); // 自分を見る
+  //普段はこれ↓
+  //camera.position.set(me.position.x, me.position.y+5, me.position.z-10);
+  //meを確認したいときはこれ↓
+  camera.position.set(0, me.position.y+5, me.position.z+20);
 
   
   
