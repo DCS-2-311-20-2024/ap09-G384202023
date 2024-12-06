@@ -95,8 +95,8 @@ function init() {
     75, window.innerWidth/window.innerHeight, 0.1, 1000);
   //普段はこれ↓
   //camera.position.set(me.position.x, me.position.y+5, me.position.z-10);
-  //meを確認したいときはこれ↓
-  camera.position.set(0, me.position.y+5, me.position.z+20);
+  //確認したいときはこれ↓
+  camera.position.set(0, me.position.y+15, me.position.z+20);
 
   
   

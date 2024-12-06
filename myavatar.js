@@ -402,6 +402,8 @@ export function makeGunYatai(){
   const GunYatai = new THREE.Group();
   const Basic = makeYatai();
   GunYatai.add(Basic);
+  //写真のURL
+  //https://www.illust-box.jp/sozai/73053/
   //射的の銃
   function makeGun(){
     const group = new THREE.Group();
@@ -447,7 +449,7 @@ export function makeGunYatai(){
   gun1.rotation.x = Math.PI / 2;
   gun1.rotation.z = 0;
   gun1.scale.set(0.4,0.2,0.2);
-  gun1.position.set(3,4.2,6);
+  gun1.position.set(3,4.2,5);
   GunYatai.add(gun1);
 
   const gun2 = makeGun();
@@ -456,7 +458,7 @@ export function makeGunYatai(){
   gun2.rotation.x = Math.PI / 2;
   gun2.rotation.z = 0;
   gun2.scale.set(0.4,0.2,0.2);
-  gun2.position.set(0,4.2,6);
+  gun2.position.set(0,4.2,5);
   GunYatai.add(gun2);
 
   const gun3 = makeGun();
@@ -465,15 +467,53 @@ export function makeGunYatai(){
   gun3.rotation.x = Math.PI / 2;
   gun3.rotation.z = 0;
   gun3.scale.set(0.4,0.2,0.2);
-  gun3.position.set(-3,4.2,6);
+  gun3.position.set(-3,4.2,5);
   GunYatai.add(gun3);
 
   //コルク
+  function makecork(){
+    const woodMaterial = new THREE.MeshPhongMaterial({ color: 0xb89465 });
+    const c1Geometry = new THREE.CylinderGeometry(1, 1.5,2, 16, 16, false);
+    const c1 = new THREE.Mesh(c1Geometry, woodMaterial);
+    c1.rotation.y = Math.PI/2;
+    c1.scale.set(0.1,0.1,0.1);
+    return c1;
+  }
+  const c1 = makecork();
+  c1.position.set(4,4,5);
+  GunYatai.add(c1);
+  const c2 = makecork();
+  c2.position.set(-2.2,4,5);
+  GunYatai.add(c2);
+  const c3 = makecork();
+  c3.position.set(-2,4,4.7);
+  GunYatai.add(c3);//////////ここまでは机の上
+  const c4 = makecork();
+  c4.rotation.x = Math.PI/2;
+  c4.position.set(4,0.2,7);
+  GunYatai.add(c4);
+  const c5 = makecork();
+  c5.rotation.x = Math.PI/2;
+  c5.position.set(-4,0.2,0);
+  GunYatai.add(c5);
+  const c6 = makecork();
+  c6.rotation.x = Math.PI/2;
+  c6.position.set(3,0.2,-3);
+  GunYatai.add(c6);
+  const c7 = makecork();
+  c7.position.set(0,0.2,-4);
+  GunYatai.add(c7);
+  const c8 = makecork();
+  c8.position.set(-2,0.2,-4);
+  GunYatai.add(c8);
 
   //景品棚
+  function makeTana(){
+    const tana = new THREE.BoxGeometry(1,1,1);
+    return tana;
+  }
+  makeTana();
   //景品
-  //射的の銃
-  //コルク
 
 
   // 影についての設定
