@@ -3,7 +3,8 @@
 //
 "use strict"; // 厳格モード
 
-import * as THREE from "three"
+import * as THREE from "three";
+import { setKeihin } from './keihin.js';
 const seg = 12; // 円や円柱の分割数
 const gap = 0.01; // 胸のマークなどを浮かせる高さ
 
@@ -509,11 +510,26 @@ export function makeGunYatai(){
 
   //景品棚
   function makeTana(){
-    const tana = new THREE.BoxGeometry(1,1,1);
+    const tana = new THREE.Group();
+    const woodMaterial = new THREE.MeshPhongMaterial({ color: 0xb89465 });
+    const w1Geometry = new THREE.BoxGeometry(12, 0.3, 2);
+    const w1 = new THREE.Mesh(w1Geometry, woodMaterial);
+    tana.add(w1);
     return tana;
   }
-  makeTana();
+  const tana1 = makeTana();
+  tana1.position.set(0,3,-5);
+  GunYatai.add(tana1);
+  const tana2 = makeTana();
+  tana2.position.set(0,6,-5);
+  GunYatai.add(tana2);
+  const tana3 = makeTana();
+  tana3.position.set(0,9,-5);
+  GunYatai.add(tana3);
+
   //景品
+  const keihin = setKeihin();
+  GunYatai.add(keihin);
 
 
   // 影についての設定

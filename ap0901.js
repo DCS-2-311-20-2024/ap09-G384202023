@@ -20,7 +20,7 @@ function init() {
   // 制御変数の定義
   const param = {
     opacity: 0.5, // 透明度
-    background: true, // 背景
+    background: false, // 背景
     follow: false, // 追跡
     birdsEye: false, // 俯瞰
     course1: false,//npcコース1
@@ -56,8 +56,8 @@ function init() {
 
 
   // 光源の設定
-  const spotLight = new THREE.SpotLight(0xffffff, 2500);
-  spotLight.position.set(-10, 30, 10);
+  const spotLight = new THREE.SpotLight(0xffffff, 10000);
+  spotLight.position.set(0, 500, 0);
   spotLight.castShadow = true;////
   scene.add(spotLight);
 
@@ -70,33 +70,13 @@ function init() {
   scene.add(npc2);
   scene.add(me);
 
-  /*
-  const FishYatai = makeFishYatai();
-  FishYatai.position.set(0,-5,0);
-  scene.add(FishYatai);
-  */
-
-  /*
-  const FoodYatai = makeFoodYatai();
-  FoodYatai.position.set(0,-5,0);
-  scene.add(FoodYatai);
-  */
-
-  
-  const GunYatai = makeGunYatai();
-  GunYatai.position.set(0,-5,0);
-  scene.add(GunYatai);
-  
-
-
-
   // カメラの作成
   const camera = new THREE.PerspectiveCamera(
     75, window.innerWidth/window.innerHeight, 0.1, 1000);
   //普段はこれ↓
-  //camera.position.set(me.position.x, me.position.y+5, me.position.z-10);
+  camera.position.set(me.position.x, me.position.y+5, me.position.z-10);
   //確認したいときはこれ↓
-  camera.position.set(0, me.position.y+15, me.position.z+20);
+  //camera.position.set(0, me.position.y+10, me.position.z+20);
 
   
   
@@ -143,6 +123,7 @@ function init() {
   }
 
   // 構造物の作成///////////////////////////////makeYataiにする
+  /*
   const buildings = new THREE.Group();
   {
     const w = 20;
@@ -175,7 +156,32 @@ function init() {
       }
     }
   }
-  scene.add(buildings);
+  scene.add(buildings);*/
+  
+  const FishYatai1 = makeFishYatai();
+  FishYatai1.position.set(-50,-5,-50);
+  FishYatai1.rotation.y = Math.PI/2;
+  scene.add(FishYatai1);
+  const FoodYatai1 = makeFoodYatai();
+  FoodYatai1.position.set(-50,-5,0);
+  FoodYatai1.rotation.y = Math.PI/2;
+  scene.add(FoodYatai1);
+  const GunYatai1 = makeGunYatai();
+  GunYatai1.position.set(-50,-5,50);
+  GunYatai1.rotation.y = Math.PI/2;
+  scene.add(GunYatai1);
+  const FishYatai2 = makeFishYatai();
+  FishYatai2.position.set(50,-5,50);
+  FishYatai2.rotation.y = -Math.PI/2;
+  scene.add(FishYatai2);
+  const FoodYatai2 = makeFoodYatai();
+  FoodYatai2.position.set(50,-5,-50);
+  FoodYatai2.rotation.y = -Math.PI/2;
+  scene.add(FoodYatai2);
+  const GunYatai2 = makeGunYatai();
+  GunYatai2.position.set(50,-5,0);
+  GunYatai2.rotation.y = -Math.PI/2;
+  scene.add(GunYatai2);
 
   // 平面の作成
   const plane = new THREE.Mesh(
