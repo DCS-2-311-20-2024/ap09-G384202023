@@ -85,6 +85,49 @@ export function makeYatai() {
   yaneB.position.set(0,5.1,-7.6);
   yaneB.rotation.x = -Math.PI/2;
   Yatai.add(yaneB);
+  //提灯
+  function makeChochin() {
+    // 提灯の本体
+    const bodyGeometry = new THREE.CylinderGeometry(0.5, 0.5, 1.5, 32, 1);
+    const bodyMaterial = new THREE.MeshLambertMaterial({ 
+      color: 0xffffb3, // 提灯の色 (金色っぽい)
+      emissive: 0x222222, // 少し発光するように
+      transparent: true,
+      opacity: 1.5 // 半透明
+    });
+    const body = new THREE.Mesh(bodyGeometry, bodyMaterial);
+  
+    // 提灯の上下キャップ (黒い部分)
+    const capGeometry = new THREE.CylinderGeometry(0.4, 0.4, 0.1, 32);
+    const capMaterial = new THREE.MeshLambertMaterial({ color: 0x000000 });
+  
+    const topCap = new THREE.Mesh(capGeometry, capMaterial);
+    const bottomCap = topCap.clone();
+  
+    topCap.position.set(0, 0.75, 0); // 上部キャップの位置
+    bottomCap.position.set(0, -0.75, 0); // 下部キャップの位置
+  
+    // 提灯のグループ化
+    const chochin = new THREE.Group();
+    chochin.add(body);
+    chochin.add(topCap);
+    chochin.add(bottomCap);
+    chochin.scale.set(2, 2, 2);
+
+    const spotLight = new THREE.SpotLight(0xffffff, 100);
+    //spotLight.position.set(0, 0, 0);
+    spotLight.castShadow = true;
+    Yatai.add(spotLight);
+    
+    return chochin;
+  }
+  const chochinR = makeChochin();
+  chochinR.position.set(-8,9,9);
+  Yatai.add(chochinR);
+  const chochinL = makeChochin();
+  chochinL.position.set(8,9,9);
+  Yatai.add(chochinL);
+  
 
   // 影についての設定
   Yatai.children.forEach((child) =>{

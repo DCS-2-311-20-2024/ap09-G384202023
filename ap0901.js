@@ -65,7 +65,7 @@ function init() {
   const npc1 = makeCBRobot();
   const npc2 = makeCBRobot();
   const me = makeme();
-  me.position.set(0,-5,0);
+  me.position.y = -5;
   scene.add(npc1);
   scene.add(npc2);
   me.castShadow = true;
@@ -151,6 +151,11 @@ const GunYatai2 = makeGunYatai();
 GunYatai2.position.set(35, -5, 0);
 GunYatai2.rotation.y = -Math.PI / 2;
 allYataiGroup.add(GunYatai2);
+
+//const GunYatai3 = makeGunYatai();
+// GunYatai3.position.set(0, -5, 0);
+// GunYatai3.rotation.y = -Math.PI / 2;
+// allYataiGroup.add(GunYatai3);
 
 allYataiGroup.scale.set(1.5, 1.5, 1.5);
 allYataiGroup.children.forEach((child) =>{
