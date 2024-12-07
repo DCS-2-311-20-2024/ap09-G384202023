@@ -415,6 +415,7 @@ function moveMe() {
 
 
     
+    // 影についての設定
     
     // Render関数内
     orbitControls.enabled = param.freeView;
