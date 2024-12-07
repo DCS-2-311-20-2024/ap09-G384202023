@@ -10,10 +10,10 @@ import { GUI } from "ili-gui";
 import {OrbitControls} from "three/addons";
 import { makeCBRobot } from './myavatar.js';
 import { makeme } from './makeme.js';
-import { makeYatai } from './myavatar.js';
-import { makeFishYatai } from './myavatar.js';
-import { makeFoodYatai } from './myavatar.js';
-import { makeGunYatai } from './myavatar.js';
+import { makeYatai } from './building.js';
+import { makeFishYatai } from './building.js';
+import { makeFoodYatai } from './building.js';
+import { makeGunYatai } from './building.js';
 
 // ３Ｄページ作成関数の定義
 function init() {
@@ -71,6 +71,8 @@ function init() {
   scene.add(me);
 
   // カメラの作成
+  //一人称視点の有力な情報を取得
+  //https://qiita.com/cranpun/items/bbb3f35cd21b03f9d290
   const camera = new THREE.PerspectiveCamera(
     75, window.innerWidth/window.innerHeight, 0.1, 1000);
   //普段はこれ↓
@@ -158,30 +160,37 @@ function init() {
   }
   scene.add(buildings);*/
   
-  const FishYatai1 = makeFishYatai();
-  FishYatai1.position.set(-50,-5,-50);
-  FishYatai1.rotation.y = Math.PI/2;
-  scene.add(FishYatai1);
-  const FoodYatai1 = makeFoodYatai();
-  FoodYatai1.position.set(-50,-5,0);
-  FoodYatai1.rotation.y = Math.PI/2;
-  scene.add(FoodYatai1);
-  const GunYatai1 = makeGunYatai();
-  GunYatai1.position.set(-50,-5,50);
-  GunYatai1.rotation.y = Math.PI/2;
-  scene.add(GunYatai1);
-  const FishYatai2 = makeFishYatai();
-  FishYatai2.position.set(50,-5,50);
-  FishYatai2.rotation.y = -Math.PI/2;
-  scene.add(FishYatai2);
-  const FoodYatai2 = makeFoodYatai();
-  FoodYatai2.position.set(50,-5,-50);
-  FoodYatai2.rotation.y = -Math.PI/2;
-  scene.add(FoodYatai2);
-  const GunYatai2 = makeGunYatai();
-  GunYatai2.position.set(50,-5,0);
-  GunYatai2.rotation.y = -Math.PI/2;
-  scene.add(GunYatai2);
+const allYataiGroup = new THREE.Group();
+
+const FishYatai1 = makeFishYatai();
+FishYatai1.position.set(-35, -5, -30);
+FishYatai1.rotation.y = Math.PI / 2;
+allYataiGroup.add(FishYatai1);
+const FoodYatai1 = makeFoodYatai();
+FoodYatai1.position.set(-35, -5, 0);
+FoodYatai1.rotation.y = Math.PI / 2;
+allYataiGroup.add(FoodYatai1);
+const GunYatai1 = makeGunYatai();
+GunYatai1.position.set(-35, -5, 30);
+GunYatai1.rotation.y = Math.PI / 2;
+allYataiGroup.add(GunYatai1);
+const FishYatai2 = makeFishYatai();
+FishYatai2.position.set(35, -5, 30);
+FishYatai2.rotation.y = -Math.PI / 2;
+allYataiGroup.add(FishYatai2);
+const FoodYatai2 = makeFoodYatai();
+FoodYatai2.position.set(35, -5, -30);
+FoodYatai2.rotation.y = -Math.PI / 2;
+allYataiGroup.add(FoodYatai2);
+const GunYatai2 = makeGunYatai();
+GunYatai2.position.set(35, -5, 0);
+GunYatai2.rotation.y = -Math.PI / 2;
+allYataiGroup.add(GunYatai2);
+
+allYataiGroup.scale.set(1.5, 1.5, 1.5);
+scene.add(allYataiGroup);
+
+  
 
   // 平面の作成
   const plane = new THREE.Mesh(
