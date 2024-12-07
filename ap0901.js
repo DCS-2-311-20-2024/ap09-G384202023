@@ -13,6 +13,7 @@ import { makeme } from './makeme.js';
 import { makeFishYatai } from './building.js';
 import { makeFoodYatai } from './building.js';
 import { makeGunYatai } from './building.js';
+import { makeTakadai } from './building.js';
 //import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
 
 // ３Ｄページ作成関数の定義
@@ -78,9 +79,9 @@ function init() {
   const camera = new THREE.PerspectiveCamera(
     75, window.innerWidth/window.innerHeight, 0.1, 1000);
   //普段はこれ↓
-  camera.position.set(me.position.x, me.position.y+5, me.position.z-10);
+  //camera.position.set(me.position.x, me.position.y+5, me.position.z-10);
   //確認したいときはこれ↓
-  //camera.position.set(0, me.position.y+10, me.position.z+20);
+  camera.position.set(100, 100, 100);
 
   
   
@@ -164,6 +165,22 @@ allYataiGroup.children.forEach((child) =>{
   child.receiveShadow = true;
 });
 scene.add(allYataiGroup);
+
+const Takadai0 = makeTakadai();
+Takadai0.position.set(0,0,100);
+scene.add(Takadai0);
+const Takadai1 = makeTakadai();
+Takadai1.position.set(120,-20,120)
+scene.add(Takadai1);
+const Takadai2 = makeTakadai();
+Takadai2.position.set(-120,-20,120)
+scene.add(Takadai2);
+const Takadai3 = makeTakadai();
+Takadai3.position.set(120,-20,-120)
+scene.add(Takadai3);
+const Takadai4 = makeTakadai();
+Takadai4.position.set(-120,-20,-120)
+scene.add(Takadai4);
 
   // 平面の作成
   const plane = new THREE.Mesh(
@@ -301,7 +318,7 @@ document.addEventListener('keyup', (event) => {
 
 // アバターを動かす関数を定義
 function moveMe() {
-  const speed = 0.2; // 移動速度を調整
+  const speed = 0.5; // 移動速度を調整
   if(param.follow===false){
   if (keyState.up) {
     me.position.z += speed; // 前方向に移動

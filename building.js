@@ -5,6 +5,7 @@
 
 import * as THREE from "three";
 import { setKeihin } from './keihin.js';
+import { makeCBRobot } from './myavatar.js';
 const seg = 12; // 円や円柱の分割数
 const gap = 0.01; // 胸のマークなどを浮かせる高さ
 
@@ -203,28 +204,25 @@ function makepinkPoi() {
   return group; // 完成したポイを返す
 }
 function makeskyPoi() {
-  const group = new THREE.Group(); // ポイ全体のグループ
+  const group = new THREE.Group();
 
-  // === フレーム部分 ===
-  const frameGeometry = new THREE.TorusGeometry(0.4, 0.05, 16, 100); // 外側の枠 (半径0.4で0.8×0.8相当)
+  const frameGeometry = new THREE.TorusGeometry(0.4, 0.05, 16, 100);
   const frameMaterial = new THREE.MeshBasicMaterial({ color: 0xB8F8FB }); // ピンク
   const frame = new THREE.Mesh(frameGeometry, frameMaterial);
-  frame.rotation.x = Math.PI / 2; // 正面に向ける
+  frame.rotation.x = Math.PI / 2;
   group.add(frame);
 
-  // === 紙の部分 ===
-  const paperGeometry = new THREE.CircleGeometry(0.4, 64); // 枠の内側の紙 (半径0.4)
+  const paperGeometry = new THREE.CircleGeometry(0.4, 64);
   const paperMaterial = new THREE.MeshBasicMaterial({
     color: 0xffffff,
     transparent: true,
-    opacity: 0.5, // 半透明
+    opacity: 0.5,
   });
   const paper = new THREE.Mesh(paperGeometry, paperMaterial);
   paper.rotation.x = -Math.PI / 2; // 正面に向ける
   paper.position.z = 0.01; // 枠に重ならないよう少し前に出す
   group.add(paper);
 
-  // === ハンドル部分 ===
   const handleGeometry = new THREE.CylinderGeometry(0.05, 0.05, 0.6, 36); // 小さい持ち手
   const handleMaterial = new THREE.MeshBasicMaterial({ color: 0xB8F8FB }); // 茶色
   const handle = new THREE.Mesh(handleGeometry, handleMaterial);
@@ -233,7 +231,7 @@ function makeskyPoi() {
   handle.position.set(-0.5, 0, 0.5); // 持ち手の位置を調整
   group.add(handle);
 
-  return group; // 完成したポイを返す
+  return group;
 }
 
 // ポイをシーンに追加
@@ -480,4 +478,125 @@ export function makeGunYatai(){
   return GunYatai;
 
 }
+//高台
+export function makeTakadai() {
+  const Takadai = new THREE.Group();
+  const FeMaterial = new THREE.MeshPhongMaterial({ color: 0x244344 });//鉄色
+  const WoodMaterial = new THREE.MeshPhongMaterial({ color: 0xB22D35 });//垂れ幕
+  const legW = 20; // 脚の幅
+  const legD = 20; // 脚の奥行
+  const legLen1 = 40; // 脚の長さ1
 
+  const yaneW = 16; // 屋根の幅
+  const yaneD = 16; // 屋根の奥行
+  const yaneLen = 0.1; // 屋根の長さ
+
+
+  //  脚の作成 
+  const legGeometry1 = new THREE.BoxGeometry(legW, legLen1, legD);
+  const legM = new THREE.Mesh(legGeometry1, WoodMaterial);
+  legM.position.y = legLen1 / 2;
+  Takadai.add(legM);
+
+  //  屋根の作成
+  function Yane(){
+    const group = new THREE.Group();
+
+    //真上
+  const yaneGeometry = new THREE.BoxGeometry(yaneW, yaneLen, yaneD);
+  const yane = new THREE.Mesh(yaneGeometry, WoodMaterial);
+  yane.position.y = legLen1 *1.5;
+  group.add(yane);
+  //前
+  const yaneFGeometry = new THREE.BoxGeometry(yaneW, yaneLen, yaneD/4);
+  const yaneF = new THREE.Mesh(yaneFGeometry, WoodMaterial);
+  yaneF.position.set(0,legLen1 *1.5-1.8,8);
+  yaneF.rotation.x = -Math.PI/2;
+  group.add(yaneF);
+  //右
+  const yaneSGeometry = new THREE.BoxGeometry(yaneW/4, yaneLen, yaneD);
+  const yaneR = new THREE.Mesh(yaneSGeometry, WoodMaterial);
+  yaneR.position.set(-8,legLen1 *1.5-1.8,0);
+  //yaneR.rotation.x = -Math.PI/10;
+  yaneR.rotation.z = -Math.PI/2;
+  group.add(yaneR);
+  //左
+  const yaneL = new THREE.Mesh(yaneSGeometry, WoodMaterial);
+  yaneL.position.set(8, legLen1 *1.5-1.8, 0);
+  //yaneL.rotation.x = -Math.PI/10;
+  yaneL.rotation.z = Math.PI / 2;
+  group.add(yaneL);
+  //後ろ
+  const yaneBGeometry = new THREE.BoxGeometry(yaneW, yaneLen, yaneD/4);
+  const yaneB = new THREE.Mesh(yaneBGeometry, WoodMaterial);
+  yaneB.position.set(0,legLen1 *1.5-1.8,-8);
+  yaneB.rotation.x = -Math.PI/2;
+  group.add(yaneB);
+
+  return group;
+  }
+  const yane = Yane();
+  yane.scale.set(1.5,1,1.5);
+  Takadai.add(yane);
+  //提灯
+  function makeChochin() {
+    // 提灯の本体
+    const bodyGeometry = new THREE.CylinderGeometry(0.5, 0.5, 1.5, 32, 1);
+    const bodyMaterial = new THREE.MeshLambertMaterial({ 
+      color: 0xffffb3, // 提灯の色 (金色っぽい)
+      emissive: 0x222222, // 少し発光するように
+      transparent: true,
+      opacity: 1.5 // 半透明
+    });
+    const body = new THREE.Mesh(bodyGeometry, bodyMaterial);
+  
+    // 提灯の上下キャップ (黒い部分)
+    const capGeometry = new THREE.CylinderGeometry(0.4, 0.4, 0.1, 32);
+    const capMaterial = new THREE.MeshLambertMaterial({ color: 0x000000 });
+  
+    const topCap = new THREE.Mesh(capGeometry, capMaterial);
+    const bottomCap = topCap.clone();
+  
+    topCap.position.set(0, 0.75, 0); // 上部キャップの位置
+    bottomCap.position.set(0, -0.75, 0); // 下部キャップの位置
+  
+    // 提灯のグループ化
+    const chochin = new THREE.Group();
+    chochin.add(body);
+    chochin.add(topCap);
+    chochin.add(bottomCap);
+    chochin.scale.set(2, 2, 2);
+
+    // const spotLight = new THREE.SpotLight(0xffffff, 100);
+    // //spotLight.position.set(0, 0, 0);
+    // spotLight.castShadow = true;
+    // Takadai.add(spotLight);
+    
+    return chochin;
+  }
+  const chochinR = makeChochin();
+  chochinR.position.set(12,40*1.5-5.5,12);
+  Takadai.add(chochinR);
+  const chochinL = makeChochin();
+  chochinL.position.set(-12,40*1.5-5.5,12);
+  Takadai.add(chochinL);
+  const chochinRL = makeChochin();
+  chochinRL.position.set(12,40*1.5-5.5,-12);
+  Takadai.add(chochinRL);
+  const chochinLL = makeChochin();
+  chochinLL.position.set(-12,40*1.5-5.5,-12);
+  Takadai.add(chochinLL);
+  
+  const hito = makeCBRobot();
+  hito.position.set(0,40,0);
+  Takadai.add(hito);
+  // 影についての設定
+  Takadai.children.forEach((child) =>{
+    child.castShadow = true;
+    child.receiveShadow = true;
+  });
+  Takadai.position.y = -5;
+  Takadai.rotation.set(0,Math.PI,0);
+  // 再生結果を戻す
+  return Takadai;
+}
