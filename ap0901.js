@@ -10,10 +10,10 @@ import { GUI } from "ili-gui";
 import {OrbitControls} from "three/addons";
 import { makeCBRobot } from './myavatar.js';
 import { makeme } from './makeme.js';
-import { makeYatai } from './building.js';
 import { makeFishYatai } from './building.js';
 import { makeFoodYatai } from './building.js';
 import { makeGunYatai } from './building.js';
+//import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
 
 // ３Ｄページ作成関数の定義
 function init() {
@@ -68,8 +68,9 @@ function init() {
   me.position.set(0,-5,0);
   scene.add(npc1);
   scene.add(npc2);
+  me.castShadow = true;
+  me.receiveShadow = true;
   scene.add(me);
-
   // カメラの作成
   //一人称視点の有力な情報を取得
   //https://qiita.com/cranpun/items/bbb3f35cd21b03f9d290
@@ -118,50 +119,14 @@ function init() {
   }
   // スポットライト
   { 
-    const light = new THREE.PointLight(0xffffff, 3000);
-    light.position.set(0, 40, 0); 
-    light.lookAt(0,0,0);
-    scene.add(light);
+    const spotLight = new THREE.PointLight(0xffffff, 8000);
+    spotLight.position.set(0, 100, 0);
+    spotLight.castShadow = true;
+    scene.add(spotLight);
   }
 
-  // 構造物の作成///////////////////////////////makeYataiにする
-  /*
-  const buildings = new THREE.Group();
-  {
-    const w = 20;
-    const h = 20;
-    const d = 20;
-    const gap = 30;
-    const n = 3;
-    for(let c=0;c<n;c++){
-      for(let r=0;r<n;r++){
-        const building = new THREE.Mesh(
-          new THREE.BoxGeometry(w,h,d),
-          new THREE.MeshPhongMaterial({
-            color: 0x408080,
-            opacity: param.opacity,
-            transparent: true
-          })
-        );
-        building.position.set(
-          (w + gap) * (c - (n-1)/2),
-          0,
-          (d + gap) * (r - (n-1)/2)
-        );
-
-        //  真ん中は追加しないが、
-        //　低確率で真ん中上に祠を表示する。
-        if (c === 1) {
-          continue;
-        }
-        buildings.add(building);
-      }
-    }
-  }
-  scene.add(buildings);*/
-  
+  // 構造物の作成
 const allYataiGroup = new THREE.Group();
-
 const FishYatai1 = makeFishYatai();
 FishYatai1.position.set(-35, -5, -30);
 FishYatai1.rotation.y = Math.PI / 2;
@@ -188,9 +153,11 @@ GunYatai2.rotation.y = -Math.PI / 2;
 allYataiGroup.add(GunYatai2);
 
 allYataiGroup.scale.set(1.5, 1.5, 1.5);
+allYataiGroup.children.forEach((child) =>{
+  child.castShadow = true;
+  child.receiveShadow = true;
+});
 scene.add(allYataiGroup);
-
-  
 
   // 平面の作成
   const plane = new THREE.Mesh(
@@ -198,8 +165,8 @@ scene.add(allYataiGroup);
     new THREE.MeshLambertMaterial({ color: 0x7d582e }));
   plane.rotation.x = -Math.PI / 2;
   plane.position.y = -5;
+  plane.receiveShadow = true; 
   scene.add(plane);
-
   /////////////////////////////npc1のコースの設定
   // 制御点
   const controlPoints1 = [
@@ -412,11 +379,9 @@ function moveMe() {
     //   //orbitControls.enableDamping = true;
     //   orbitControls.update(); // カメラを操作できるように
     // }
-
-
     
     // 影についての設定
-    
+    renderer.shadowMap.enabled = true;
     // Render関数内
     orbitControls.enabled = param.freeView;
     orbitControls.update();//////////////////////////ここでアップデート
