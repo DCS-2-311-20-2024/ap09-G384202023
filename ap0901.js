@@ -43,7 +43,7 @@ function init() {
     }
   });
   gui.add(param, "tuiseki").name("一人称視点(追跡)");
-  gui.add(param, "birdsEye").name("俯瞰(未実装)");
+  gui.add(param, "birdsEye").name("俯瞰");
   gui.add(param, "course1").name("コース1");
   gui.add(param, "course2").name("コース2");
   gui.add(param, "axes").name("座標軸");
@@ -408,6 +408,7 @@ function updateRotation() {
       scene.background = null;
       plane.visible = true;
     }
+
     if (param.tuiseki) {
       const faceOffset = new THREE.Vector3(me.position.x,me.position.y+10,me.position.z); // カメラのオフセット位置を調整
       const facePosition = new THREE.Vector3().copy(faceOffset).add(faceOffset.applyQuaternion(me.quaternion));
@@ -429,13 +430,14 @@ function updateRotation() {
       }*/
 
         // アバターの向きを正しくカメラが向くように設定
-  const direction = new THREE.Vector3(0, 0, 0).applyQuaternion(me.quaternion);
-  const targetPosition = me.position.clone().add(direction);
-
-  camera.lookAt(targetPosition); // カメラがターゲット位置を向くように設定
-
-    
+      const direction = new THREE.Vector3(0, 0, 0).applyQuaternion(me.quaternion);
+      const targetPosition = me.position.clone().add(direction);
+      camera.lookAt(targetPosition); // カメラがターゲット位置を向くように設定
       //camera.up.set(0, 1, 0); // カメラの上をy軸正方向に設定
+    }else if(param.birdsEye){
+      camera.position.set(0,300,0);//上空から
+      camera.lookAt(plane.position);//平面の中央を見る
+      camera.up.set(0,0,-1);//カメラの上をz軸負の向きにする
     }
     
     // 影についての設定
