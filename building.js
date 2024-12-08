@@ -13,7 +13,12 @@ const gap = 0.01; // 胸のマークなどを浮かせる高さ
 export function makeYatai() {
   const Yatai = new THREE.Group();
   const FeMaterial = new THREE.MeshPhongMaterial({ color: 0x244344 });//鉄色
-  const WoodMaterial = new THREE.MeshPhongMaterial({ color: 0xB22D35 });//垂れ幕
+  const WoodMaterial = new THREE.MeshBasicMaterial({ color: 0xB22D35 });//垂れ幕
+
+  const textureLoader = new THREE.TextureLoader();
+  const otherTexture = textureLoader.load('kouhaku2.jpeg'); // 他の写真
+  const otherMaterial = new THREE.MeshBasicMaterial({ map: otherTexture }); // 他の面用
+
   const legW = 0.2; // 脚の幅
   const legD = 0.2; // 脚の奥行
   const legLen1 = 13.6; // 脚の長さ1
@@ -49,7 +54,7 @@ export function makeYatai() {
   Yatai.add(legLL);
   //  台の作成
   const tableGeometry = new THREE.BoxGeometry(tableW, tableLen, tableD);
-  const table = new THREE.Mesh(tableGeometry, WoodMaterial);
+  const table = new THREE.Mesh(tableGeometry, otherMaterial);
   table.position.set(0,tableLen/2,4);
   Yatai.add(table);
 
@@ -82,7 +87,7 @@ export function makeYatai() {
   Yatai.add(yaneL);
   //後ろ
   const yaneBGeometry = new THREE.BoxGeometry(yaneW, yaneLen, yaneD/1.8);
-  const yaneB = new THREE.Mesh(yaneBGeometry, WoodMaterial);
+  const yaneB = new THREE.Mesh(yaneBGeometry, otherMaterial);
   yaneB.position.set(0,5.1,-7.6);
   yaneB.rotation.x = -Math.PI/2;
   Yatai.add(yaneB);
@@ -481,7 +486,6 @@ export function makeGunYatai(){
 //高台
 export function makeTakadai() {
   const Takadai = new THREE.Group();
-  const FeMaterial = new THREE.MeshPhongMaterial({ color: 0x244344 });//鉄色
   const WoodMaterial = new THREE.MeshPhongMaterial({ color: 0xB22D35 });//垂れ幕
   const legW = 20; // 脚の幅
   const legD = 20; // 脚の奥行
@@ -493,8 +497,11 @@ export function makeTakadai() {
 
 
   //  脚の作成 
+  const textureLoader = new THREE.TextureLoader();
+  const otherTexture = textureLoader.load('kouhaku2.jpeg'); // 他の写真
+  const otherMaterial = new THREE.MeshBasicMaterial({ map: otherTexture }); // 他の面用
   const legGeometry1 = new THREE.BoxGeometry(legW, legLen1, legD);
-  const legM = new THREE.Mesh(legGeometry1, WoodMaterial);
+  const legM = new THREE.Mesh(legGeometry1,otherMaterial);
   legM.position.y = legLen1 / 2;
   Takadai.add(legM);
 

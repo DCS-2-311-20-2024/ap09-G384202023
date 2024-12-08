@@ -154,6 +154,8 @@ GunYatai2.position.set(35, -5, 0);
 GunYatai2.rotation.y = -Math.PI / 2;
 allYataiGroup.add(GunYatai2);
 
+
+
 //const GunYatai3 = makeGunYatai();
 // GunYatai3.position.set(0, -5, 0);
 // GunYatai3.rotation.y = -Math.PI / 2;
@@ -167,7 +169,7 @@ allYataiGroup.children.forEach((child) =>{
 scene.add(allYataiGroup);
 
 const Takadai0 = makeTakadai();
-Takadai0.position.set(0,0,100);
+Takadai0.position.set(0,-5,100);
 scene.add(Takadai0);
 const Takadai1 = makeTakadai();
 Takadai1.position.set(120,-20,120)
@@ -181,6 +183,19 @@ scene.add(Takadai3);
 const Takadai4 = makeTakadai();
 Takadai4.position.set(-120,-20,-120)
 scene.add(Takadai4);
+
+//　月
+const geometry = new THREE.SphereGeometry(1, 32, 32);
+const material = new THREE.MeshStandardMaterial({
+  color: 0xffffb3, // 月の色っぽいグレー
+  roughness: 0.7, // マットな質感
+  metalness: 0.2, // 金属感は少なめ
+  bumpScale: 0.05, // 凹凸のスケールを調整
+});
+const moon = new THREE.Mesh(geometry, material);
+moon.position.set(80,150,80);
+moon.scale.set(20,20,20);
+scene.add(moon);
 
   // 平面の作成
   const plane = new THREE.Mesh(
