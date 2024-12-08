@@ -14,10 +14,11 @@ export function makeYatai() {
   const Yatai = new THREE.Group();
   const FeMaterial = new THREE.MeshPhongMaterial({ color: 0x244344 });//鉄色
   const WoodMaterial = new THREE.MeshBasicMaterial({ color: 0xB22D35 });//垂れ幕
+  const WhMaterial = new THREE.MeshPhongMaterial({ color: 0xffffff });//白色
 
   const textureLoader = new THREE.TextureLoader();
-  const otherTexture = textureLoader.load('kouhaku2.jpeg'); // 他の写真
-  const otherMaterial = new THREE.MeshBasicMaterial({ map: otherTexture }); // 他の面用
+  const otherTexture = textureLoader.load('kouhaku2.jpeg');
+  const otherMaterial = new THREE.MeshBasicMaterial({ map: otherTexture });
 
   const legW = 0.2; // 脚の幅
   const legD = 0.2; // 脚の奥行
@@ -133,6 +134,14 @@ export function makeYatai() {
   const chochinL = makeChochin();
   chochinL.position.set(8,9,9);
   Yatai.add(chochinL);
+
+  const cdrobot = makeCBRobot();
+  Yatai.add(cdrobot);
+  // 頭部の鉢巻を追加
+  const bandGeometry = new THREE.BoxGeometry(4.2, 0.4, 2.4 * 1.1); // 鉢巻のサイズ調整
+  const band = new THREE.Mesh(bandGeometry, WhMaterial);
+  band.position.set(0,1.3+6.3, 0); // 頭の中心より少し上に配置
+  Yatai.add(band);
   
 
   // 影についての設定
@@ -498,6 +507,7 @@ export function makeTakadai() {
 
   //  脚の作成 
   const textureLoader = new THREE.TextureLoader();
+  //https://www.irasutoya.com/2017/10/blog-post_17.html
   const otherTexture = textureLoader.load('kouhaku2.jpeg'); // 他の写真
   const otherMaterial = new THREE.MeshBasicMaterial({ map: otherTexture }); // 他の面用
   const legGeometry1 = new THREE.BoxGeometry(legW, legLen1, legD);

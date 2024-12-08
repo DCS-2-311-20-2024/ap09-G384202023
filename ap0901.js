@@ -73,6 +73,25 @@ function init() {
   me.castShadow = true;
   me.receiveShadow = true;
   scene.add(me);
+  const npc3 = makeCBRobot();
+  const npc4 = makeCBRobot();
+  const npc5 = makeCBRobot();
+  const npc6 = makeCBRobot();
+  const npc7 = makeCBRobot();
+  npc3.position.set(20,-5,20);
+  npc4.position.set(-40,-5,40);
+  npc5.position.set(-70,-5,60);
+  npc6.position.set(40,-5,45);
+  npc7.position.set(120,-5,80);
+  npc3.rotation.set(0,Math.PI/4,0);
+  npc4.rotation.set(0,-Math.PI/6,0);
+  npc5.rotation.set(0,0,0);
+  npc6.rotation.set(0,Math.PI/2,0);
+  scene.add(npc3);
+  scene.add(npc4);
+  scene.add(npc5);
+  scene.add(npc6);
+  scene.add(npc7);
   // カメラの作成
   //一人称視点の有力な情報を取得
   //https://qiita.com/cranpun/items/bbb3f35cd21b03f9d290
@@ -81,7 +100,7 @@ function init() {
   //普段はこれ↓
   //camera.position.set(me.position.x, me.position.y+5, me.position.z-10);
   //確認したいときはこれ↓
-  camera.position.set(100, 100, 100);
+  camera.position.set(50,50,50);
 
   
   
@@ -127,7 +146,8 @@ function init() {
     scene.add(spotLight);
   }
 
-  // 構造物の作成
+  // 構造物の作成 meshlambertの関係でこれしか建物が建てられない。
+  // 多分紅白のついてるやつは無理なだけかも。
 const allYataiGroup = new THREE.Group();
 const FishYatai1 = makeFishYatai();
 FishYatai1.position.set(-35, -5, -30);
@@ -141,6 +161,7 @@ const GunYatai1 = makeGunYatai();
 GunYatai1.position.set(-35, -5, 30);
 GunYatai1.rotation.y = Math.PI / 2;
 allYataiGroup.add(GunYatai1);
+
 const FishYatai2 = makeFishYatai();
 FishYatai2.position.set(35, -5, 30);
 FishYatai2.rotation.y = -Math.PI / 2;
@@ -156,9 +177,8 @@ allYataiGroup.add(GunYatai2);
 
 
 
-//const GunYatai3 = makeGunYatai();
+// const GunYatai3 = makeGunYatai();
 // GunYatai3.position.set(0, -5, 0);
-// GunYatai3.rotation.y = -Math.PI / 2;
 // allYataiGroup.add(GunYatai3);
 
 allYataiGroup.scale.set(1.5, 1.5, 1.5);
