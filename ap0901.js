@@ -23,6 +23,7 @@ function init() {
   const param = {
     background: false, // 背景
     tuiseki: false, // 追跡
+    fps : false,
     birdsEye: false, // 俯瞰
     course1: false,//npcコース1
     course2: false,//npcコース2
@@ -34,6 +35,7 @@ function init() {
   const gui = new GUI();
   gui.add(param, "background").name("背景(床が映らない)");
   gui.add(param, "tuiseki").name("一人称視点(追跡)");
+  gui.add(param, "fps").name("FPS");
   gui.add(param, "birdsEye").name("俯瞰");
   gui.add(param, "course1").name("コース1");
   gui.add(param, "course2").name("コース2");
@@ -89,9 +91,9 @@ function init() {
   const camera = new THREE.PerspectiveCamera(
     75, window.innerWidth/window.innerHeight, 0.1, 1000);
   //普段はこれ↓
-  //camera.position.set(me.position.x, me.position.y+5, me.position.z-10);
+  camera.position.set(me.position.x, me.position.y+5, me.position.z-10);
   //確認したいときはこれ↓
-  camera.position.set(0,30,-100);
+  //camera.position.set(0,30,-100);
 
   const camera2 = new THREE.PerspectiveCamera(
     50, window.innerWidth/window.innerHeight, 0.1, 1000);
@@ -302,9 +304,6 @@ scene.add(moon);
   const npcTarget1 = new THREE.Vector3();
   const npcPosition2 = new THREE.Vector3();
   const npcTarget2 = new THREE.Vector3();
-  //const mePosition = new THREE.Vector3();
-  //const meTarget = new THREE.Vector3();
-  //const cameraPosition = new THREE.Vector3();
 
   // キーボードの入力状態を管理するオブジェクト
 const keyState = {
@@ -390,9 +389,8 @@ function updateRotation() {
     }
 }
 
-
   // 描画関数
-  function render() {/////////////////////render
+  function render() {///////////////////////////////////render
     moveMe(); // キー入力に応じてアバターを移動
     updateRotation(); // アバターの向きを更新
     // npc の位置と向きの設定
@@ -414,7 +412,6 @@ function updateRotation() {
       scene.background = null;
       plane.visible = true;
     }
-  
     // 影についての設定
     renderer.shadowMap.enabled = true;
     // Render関数内
@@ -426,24 +423,8 @@ function updateRotation() {
     // 座標表示の有無
     axes.visible = param.axes;
     helper.update();
-
-
-
  
     if (param.tuiseki) {
-      /*
-      const faceOffset = new THREE.Vector3();
-      if(keyState.up){
-        faceOffset.set(me.position.x,5,me.position.z-20); // カメラのオフセット位置を調整
-      }else if(keyState.down){
-        faceOffset.set(me.position.x,5,me.position.z+20);
-      }else if(keyState.left){
-        faceOffset.set(me.position.x+10,5,me.position.z);
-      }else{
-        faceOffset.set(me.position.x-10,5,me.position.z);
-      }
-      faceOffset.applyQuaternion(me.quaternion);
-      */
       renderer.render(scene, camera2);
     }else if(param.birdsEye){
       camera.position.set(0,300,0);//上空から
