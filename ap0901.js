@@ -22,7 +22,6 @@ function init() {
   // 制御変数の定義
   const param = {
     background: false, // 背景
-    follow: false, // 前後左右
     tuiseki: false, // 追跡
     birdsEye: false, // 俯瞰
     course1: false,//npcコース1
@@ -34,15 +33,6 @@ function init() {
   // GUIコントローラの設定
   const gui = new GUI();
   gui.add(param, "background").name("背景(床が映らない)");
-  //gui.add(param, "follow").name("一人称視点(未実装)");
-  gui.add(param, "follow").name("前後左右に回転")
-  .onChange(() => {
-    if (param.follow) {
-      orbitControls.enabled = false;
-    } else {
-      orbitControls.enabled = true;
-    }
-  });
   gui.add(param, "tuiseki").name("一人称視点(追跡)");
   gui.add(param, "birdsEye").name("俯瞰");
   gui.add(param, "course1").name("コース1");
@@ -356,7 +346,7 @@ document.addEventListener('keyup', (event) => {
 // アバターを動かす関数を定義
 function moveMe() {
   const speed = 0.5; // 移動速度を調整
-  if(param.follow===false){
+  if(param.tuiseki===false){
   if (keyState.up) {
     me.position.z += speed; // 前方向に移動
   }
@@ -371,66 +361,21 @@ function moveMe() {
   }
 }
 }
-//　これは回転１、２、３、４キー
-const keyState2 = {
-  one: false,
-  two: false,
-  three: false,
-  four: false
-};
-
-// キーが押されたときに状態を更新
-document.addEventListener("keydown", (event) => {
-  switch (event.code) {
-    case "Digit1": // キー「1」前
-      keyState2.one = true;
-      break;
-    case "Digit2": // キー「2」後ろ
-      keyState2.two = true;
-      break;
-    case "Digit3": // キー「3」左
-      keyState2.three = true;
-      break;
-    case "Digit4": // キー「4」右
-      keyState2.four = true;
-      break;
-  }
-});
-
-// キーが離されたときに状態を更新
-document.addEventListener("keyup", (event) => {
-  switch (event.code) {
-    case "Digit1": // キー「1」
-      keyState2.one = false;
-      break;
-    case "Digit2": // キー「2」
-      keyState2.two = false;
-      break;
-    case "Digit3": // キー「3」
-      keyState2.three = false;
-      break;
-    case "Digit4": // キー「4」
-      keyState2.four = false;
-      break;
-  }
-});
 
 // 回転を更新する関数
 function updateRotation() {
   const direction = new THREE.Vector3();
-  if (param.follow) {
     // キー入力に応じた方向設定
-    if (keyState2.one) direction.z += 1; // 前
-    if (keyState2.two) direction.z -= 1; // 後ろ
-    if (keyState2.three) direction.x += 1; // 左
-    if (keyState2.four) direction.x -= 1; // 右
+    if (keyState.up) direction.z += 1; // 前
+    if (keyState.down) direction.z -= 1; // 後ろ
+    if (keyState.left) direction.x += 1; // 左
+    if (keyState.right) direction.x -= 1; // 右
 
     if (direction.length() > 0) {
       direction.normalize(); // 方向ベクトルを正規化
       const angle = Math.atan2(direction.x, direction.z); // 回転角を計算
       me.rotation.y = angle; // Y軸を中心に回転
     }
-  }
 }
 
 
@@ -459,12 +404,10 @@ function updateRotation() {
     }
 
     if (param.tuiseki) {
-      const faceOffset = new THREE.Vector3(me.position.x,0,me.position.z); // カメラのオフセット位置を調整
+      const faceOffset = new THREE.Vector3(me.position.x,0,me.position.z-20); // カメラのオフセット位置を調整
       const facePosition = new THREE.Vector3().copy(faceOffset).add(faceOffset.applyQuaternion(me.quaternion));
       camera.position.copy(facePosition);
-      
-      if (param.follow) {
-        // アバターの向きをカメラの向きとして設定
+
         const direction = new THREE.Vector3();
         if (keyState.up) direction.set(0, 0, -1); // 前方
         if (keyState.down) direction.set(0, 0, 1); // 後方
@@ -476,13 +419,7 @@ function updateRotation() {
           const targetPosition = new THREE.Vector3().copy(me.position).add(direction.multiplyScalar(10)); // 向きに応じて少し前方に移動
           camera.lookAt(targetPosition);
         }
-      }else{
-        // アバターの向きを正しくカメラが向くように設定
-      const direction = new THREE.Vector3(0, 0, 0).applyQuaternion(me.quaternion);
-      const targetPosition = me.position.clone().add(direction);
-      camera.lookAt(targetPosition); // カメラがターゲット位置を向くように設定
-      //camera.up.set(0, 1, 0); // カメラの上をy軸正方向に設定
-      }
+      
     }else if(param.birdsEye){
       camera.position.set(0,300,0);//上空から
       camera.lookAt(plane.position);//平面の中央を見る
