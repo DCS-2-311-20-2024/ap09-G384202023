@@ -57,15 +57,16 @@ function init() {
   scene.add(spotLight);
 
   // meとnpc、たてもの追加
-  const npc1 = makeCBRobot();
-  const npc2 = makeCBRobot();
   const me = makeme();
-  scene.add(npc1);
-  scene.add(npc2);
   me.castShadow = true;
   me.receiveShadow = true;
   const meBoundingBox = new THREE.Box3().setFromObject(me);//変更点
+  me.position.set(0,0,-80)
   scene.add(me);
+
+  const allnpc = new THREE.Group();
+  const npc1 = makeCBRobot();
+  const npc2 = makeCBRobot();
   const npc3 = makeCBRobot();
   const npc4 = makeCBRobot();
   const npc5 = makeCBRobot();
@@ -80,11 +81,23 @@ function init() {
   npc4.rotation.set(0,-Math.PI/6,0);
   npc5.rotation.set(0,0,0);
   npc6.rotation.set(0,Math.PI/2,0);
-  scene.add(npc3);
-  scene.add(npc4);
-  scene.add(npc5);
-  scene.add(npc6);
-  scene.add(npc7);
+  allnpc.add(npc1);
+  allnpc.add(npc2);
+  allnpc.add(npc3);
+  allnpc.add(npc4);
+  allnpc.add(npc5);
+  allnpc.add(npc6);
+  allnpc.add(npc7);
+
+  allnpc.children.forEach((child) =>{
+    child.castShadow = true;
+    child.receiveShadow = true;
+  });
+  const npcBoundingBoxes = allnpc.children.map(child => {
+    const box = new THREE.Box3().setFromObject(child);////変更点
+    return { box, object: child };
+  });
+  scene.add(allnpc);
   // カメラの作成
   //一人称視点の有力な情報を取得
   //https://qiita.com/cranpun/items/bbb3f35cd21b03f9d290
@@ -376,22 +389,21 @@ function moveMe() {
   // 衝突判定
   const collision1 = yataiBoundingBoxes.some(({ box }) => meBoundingBox.intersectsBox(box));
   const collision2 = takadaiBoundingBoxes.some(({ box }) => meBoundingBox.intersectsBox(box));
+  const collision3 = npcBoundingBoxes.some(({ box }) => meBoundingBox.intersectsBox(box));
 
   // 衝突や移動範囲外の場合の処理
-  if (collision1 || collision2 || me.position.z >= 150 || me.position.z <= -150 || me.position.x <= -150 || me.position.x >= 150) {
+  if (collision1 || collision2 || collision3 || me.position.z >= 150 || me.position.z <= -150 || me.position.x <= -150 || me.position.x >= 150) {
     //me.position.copy(previousPosition); // 元の位置に戻す
-
-    // 地面から落ちた場合のメッセージ表示
     if (me.position.z <= -150 || me.position.z >= 150 || me.position.x <= -150 || me.position.x >= 150) {
       document.getElementById("output").innerText = "地面から落ちてしまった！";
       //console.log('me.position.z:', me.position.z);
       me.position.copy(previousPosition);
     } else if (collision1) {
-      // 衝突している場合のメッセージ表示
       document.getElementById("output").innerText = "いらっしゃい！（あなたは屋台の魅力に惹かれて動けなくなった）";
     } else if (collision2) {
-      // 衝突していない場合、メッセージを消す
       document.getElementById("output").innerText = "高台なんかに何か用かい？(あなたは高台の高さに魅力を感じて動けなくなった)";
+    } else if (collision3){
+      document.getElementById("output").innerText = "「痛っ！？」(あなたは他人とぶつかって動けなくなった)";
     }
   }
 }
@@ -460,12 +472,12 @@ function updateRotation() {
     }else if(param.birdsEye){
       camera.position.set(0,300,0);//上空から
       camera.lookAt(plane.position);//平面の中央を見る
-      camera.up.set(0,0,1);//カメラの上をz軸負の向きにする
+      camera.up.set(0,0,1);
       renderer.render(scene, camera);
     }
     else {
     // 描画
-      camera.up.set(0,1,0);//カメラの上をz軸負の向きにする
+      camera.up.set(0,1,0);
       renderer.render(scene, camera);
     }
     scene.children.forEach(child => {
