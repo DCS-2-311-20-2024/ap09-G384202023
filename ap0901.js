@@ -14,6 +14,7 @@ import { makeFishYatai } from './building.js';
 import { makeFoodYatai } from './building.js';
 import { makeGunYatai } from './building.js';
 import { makeTakadai } from './building.js';
+import { makeDensen } from './densen.js';
 //import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
 
 // ３Ｄページ作成関数の定義
@@ -100,7 +101,7 @@ function init() {
   //普段はこれ↓
   //camera.position.set(me.position.x, me.position.y+5, me.position.z-10);
   //確認したいときはこれ↓
-  camera.position.set(50,50,50);
+  camera.position.set(0,30,-100);
 
   
   
@@ -271,6 +272,10 @@ scene.add(moon);
   
 ///////////////////npcend
 
+  // 電線
+  const densen = makeDensen();
+  scene.add(densen);
+
   // コースの描画
   const points1 = course1.getPoints(300);
   const points2 = course2.getPoints(300);
@@ -282,9 +287,9 @@ scene.add(moon);
     new THREE.BufferGeometry().setFromPoints(points2),
     new THREE.LineBasicMaterial({ color: "blue"})
   );
+  
   scene.add(courseObject1);
   scene.add(courseObject2);
-
   // Windowサイズの変更処理
   window.addEventListener("resize", ()=>{
     camera.aspect = window.innerWidth/window.innerHeight;
@@ -300,12 +305,9 @@ scene.add(moon);
   const npcTarget1 = new THREE.Vector3();
   const npcPosition2 = new THREE.Vector3();
   const npcTarget2 = new THREE.Vector3();
-  const mePosition = new THREE.Vector3();
-  const meTarget = new THREE.Vector3();
-
-  const cameraPosition = new THREE.Vector3();
-
-
+  //const mePosition = new THREE.Vector3();
+  //const meTarget = new THREE.Vector3();
+  //const cameraPosition = new THREE.Vector3();
 
   // キーボードの入力状態を管理するオブジェクト
 const keyState = {
