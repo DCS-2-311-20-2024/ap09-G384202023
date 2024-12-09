@@ -64,6 +64,7 @@ function init() {
   scene.add(npc2);
   me.castShadow = true;
   me.receiveShadow = true;
+  const meBoundingBox = new THREE.Box3().setFromObject(me);//変更点
   scene.add(me);
   const npc3 = makeCBRobot();
   const npc4 = makeCBRobot();
@@ -90,15 +91,10 @@ function init() {
   const camera = new THREE.PerspectiveCamera(
     75, window.innerWidth/window.innerHeight, 0.1, 1000);
   //普段はこれ↓
-  camera.position.set(me.position.x, me.position.y+5, me.position.z-10);
+  camera.position.set(me.position.x, me.position.y+10, me.position.z-20);
   //確認したいときはこれ↓
-  //camera.position.set(0,30,-100);
-
   const camera2 = new THREE.PerspectiveCamera(
     50, window.innerWidth/window.innerHeight, 0.1, 1000);
-  //普段はこれ↓
-  //camera.position.set(me.position.x, me.position.y+5, me.position.z-10);
-  //確認したいときはこれ↓
   camera2.position.set(0,0,0);
   camera2.lookAt(0,0,5);
   const helper = new THREE.CameraHelper( camera2 );
@@ -174,34 +170,43 @@ GunYatai2.position.set(35, 0, 0);
 GunYatai2.rotation.y = -Math.PI / 2;
 allYataiGroup.add(GunYatai2);
 
-
-
-// const GunYatai3 = makeGunYatai();
-// GunYatai3.position.set(0, -5, 0);
-// allYataiGroup.add(GunYatai3);
-
-allYataiGroup.scale.set(1.5, 1.5, 1.5);
+//allYataiGroup.scale.set(1.5, 1.5, 1.5);
 allYataiGroup.children.forEach((child) =>{
   child.castShadow = true;
   child.receiveShadow = true;
 });
+const yataiBoundingBoxes = allYataiGroup.children.map(child => {
+  const box = new THREE.Box3().setFromObject(child);////変更点
+  return { box, object: child };
+});
 scene.add(allYataiGroup);
 
+//高台
+const allTakadaiGroup = new THREE.Group();
 const Takadai0 = makeTakadai();
 Takadai0.position.set(0,0,100);
-scene.add(Takadai0);
+allTakadaiGroup.add(Takadai0);
 const Takadai1 = makeTakadai();
-Takadai1.position.set(120,-20,120)
-scene.add(Takadai1);
+Takadai1.position.set(120,-20,120);
+allTakadaiGroup.add(Takadai1);
 const Takadai2 = makeTakadai();
-Takadai2.position.set(-120,-20,120)
-scene.add(Takadai2);
+Takadai2.position.set(-120,-20,120);
+allTakadaiGroup.add(Takadai2);
 const Takadai3 = makeTakadai();
-Takadai3.position.set(120,-20,-120)
-scene.add(Takadai3);
+Takadai3.position.set(120,-20,-120);
+allTakadaiGroup.add(Takadai3);
 const Takadai4 = makeTakadai();
-Takadai4.position.set(-120,-20,-120)
-scene.add(Takadai4);
+Takadai4.position.set(-120,-20,-120);
+allTakadaiGroup.add(Takadai4);
+allYataiGroup.children.forEach((child) =>{
+  child.castShadow = true;
+  child.receiveShadow = true;
+});
+const takadaiBoundingBoxes = allTakadaiGroup.children.map(child => {
+  const box = new THREE.Box3().setFromObject(child);////変更点
+  return { box, object: child };
+});
+scene.add(allTakadaiGroup);
 
 //　月
 const geometry = new THREE.SphereGeometry(1, 32, 32);
@@ -226,10 +231,10 @@ scene.add(moon);
   /////////////////////////////npc1のコースの設定
   // 制御点
   const controlPoints1 = [
-    [-30, 0, 80],
-    [-30, 0, -80],
-    [-80, 0, -80],
-    [-80, 0, 80],
+    [-15, 0, 60],
+    [-15, 0, -60],
+    [-55, 0, -60],
+    [-55, 0, 60],
   ]
   // コースの補間
   const p0 = new THREE.Vector3();
@@ -248,10 +253,10 @@ scene.add(moon);
   /////////////////////////////npc2のコースの設定//////////時間があったら逆回転にする
   // 制御点
   const controlPoints2 = [
-    [30, 0, -80],
-    [30, 0, 80],
-    [80, 0, 80],
-    [80, 0, -80]
+    [15, 0, -60],
+    [15, 0, 60],
+    [55, 0, 60],
+    [55, 0, -60]
   ]
   const p2 = new THREE.Vector3();
   const p3 = new THREE.Vector3();
@@ -350,7 +355,8 @@ document.addEventListener('keyup', (event) => {
 // アバターを動かす関数を定義
 function moveMe() {
   const speed = 0.5; // 移動速度を調整
-  //if(param.tuiseki===false){
+  const previousPosition = me.position.clone(); // 移動前の位置を保存
+
   if (keyState.up) {
     me.position.z += speed; // 前方向に移動
   }
@@ -363,8 +369,33 @@ function moveMe() {
   if (keyState.right) {
     me.position.x -= speed; // 右方向に移動
   }
-//}
+
+  // アバターの境界ボックスを更新
+  meBoundingBox.setFromObject(me);
+
+  // 衝突判定
+  const collision1 = yataiBoundingBoxes.some(({ box }) => meBoundingBox.intersectsBox(box));
+  const collision2 = takadaiBoundingBoxes.some(({ box }) => meBoundingBox.intersectsBox(box));
+
+  // 衝突や移動範囲外の場合の処理
+  if (collision1 || collision2 || me.position.z >= 150 || me.position.z <= -150 || me.position.x <= -150 || me.position.x >= 150) {
+    //me.position.copy(previousPosition); // 元の位置に戻す
+
+    // 地面から落ちた場合のメッセージ表示
+    if (me.position.z <= -150 || me.position.z >= 150 || me.position.x <= -150 || me.position.x >= 150) {
+      document.getElementById("output").innerText = "地面から落ちてしまった！";
+      //console.log('me.position.z:', me.position.z);
+      me.position.copy(previousPosition);
+    } else if (collision1) {
+      // 衝突している場合のメッセージ表示
+      document.getElementById("output").innerText = "いらっしゃい！（あなたは屋台の魅力に惹かれて動けなくなった）";
+    } else if (collision2) {
+      // 衝突していない場合、メッセージを消す
+      document.getElementById("output").innerText = "高台なんかに何か用かい？(あなたは高台の高さに魅力を感じて動けなくなった)";
+    }
+  }
 }
+
 
 // 回転を更新する関数
 let direction;
@@ -386,6 +417,8 @@ function updateRotation() {
       camera2.lookAt(camera2LA);
     }
 }
+
+
 
   // 描画関数
   function render() {///////////////////////////////////render
@@ -414,7 +447,7 @@ function updateRotation() {
     renderer.shadowMap.enabled = true;
     // Render関数内
     orbitControls.enabled = param.freeView;
-    orbitControls.update();//////////////////////////ここでアップデート
+    orbitControls.update();
     // コース表示の有無
     courseObject1.visible = param.course1;
     courseObject2.visible = param.course2;
@@ -432,11 +465,14 @@ function updateRotation() {
     }
     else {
     // 描画
-      camera.position.set(0,30,-100);
-      camera.lookAt(0,0,0);//平面の中央を見る
       camera.up.set(0,1,0);//カメラの上をz軸負の向きにする
       renderer.render(scene, camera);
     }
+    scene.children.forEach(child => {
+      if (child instanceof THREE.CameraHelper) {
+        scene.remove(child);
+      }
+    });
     // 次のフレームでの描画要請
     requestAnimationFrame(render);
   }
