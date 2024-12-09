@@ -60,7 +60,6 @@ function init() {
   const npc1 = makeCBRobot();
   const npc2 = makeCBRobot();
   const me = makeme();
-  me.position.y = -5;
   scene.add(npc1);
   scene.add(npc2);
   me.castShadow = true;
@@ -71,11 +70,11 @@ function init() {
   const npc5 = makeCBRobot();
   const npc6 = makeCBRobot();
   const npc7 = makeCBRobot();
-  npc3.position.set(20,-5,20);
-  npc4.position.set(-40,-5,40);
-  npc5.position.set(-70,-5,60);
-  npc6.position.set(40,-5,45);
-  npc7.position.set(120,-5,80);
+  npc3.position.set(20,0,20);
+  npc4.position.set(-40,0,40);
+  npc5.position.set(-70,0,60);
+  npc6.position.set(40,0,45);
+  npc7.position.set(120,0,80);
   npc3.rotation.set(0,Math.PI/4,0);
   npc4.rotation.set(0,-Math.PI/6,0);
   npc5.rotation.set(0,0,0);
@@ -150,28 +149,28 @@ function init() {
   // 多分紅白のついてるやつは無理なだけかも。
 const allYataiGroup = new THREE.Group();
 const FishYatai1 = makeFishYatai();
-FishYatai1.position.set(-35, -5, -30);
+FishYatai1.position.set(-35, 0, -30);
 FishYatai1.rotation.y = Math.PI / 2;
 allYataiGroup.add(FishYatai1);
 const FoodYatai1 = makeFoodYatai();
-FoodYatai1.position.set(-35, -5, 0);
+FoodYatai1.position.set(-35, 0, 0);
 FoodYatai1.rotation.y = Math.PI / 2;
 allYataiGroup.add(FoodYatai1);
 const GunYatai1 = makeGunYatai();
-GunYatai1.position.set(-35, -5, 30);
+GunYatai1.position.set(-35, 0, 30);
 GunYatai1.rotation.y = Math.PI / 2;
 allYataiGroup.add(GunYatai1);
 
 const FishYatai2 = makeFishYatai();
-FishYatai2.position.set(35, -5, 30);
+FishYatai2.position.set(35, 0, 30);
 FishYatai2.rotation.y = -Math.PI / 2;
 allYataiGroup.add(FishYatai2);
 const FoodYatai2 = makeFoodYatai();
-FoodYatai2.position.set(35, -5, -30);
+FoodYatai2.position.set(35, 0, -30);
 FoodYatai2.rotation.y = -Math.PI / 2;
 allYataiGroup.add(FoodYatai2);
 const GunYatai2 = makeGunYatai();
-GunYatai2.position.set(35, -5, 0);
+GunYatai2.position.set(35, 0, 0);
 GunYatai2.rotation.y = -Math.PI / 2;
 allYataiGroup.add(GunYatai2);
 
@@ -189,7 +188,7 @@ allYataiGroup.children.forEach((child) =>{
 scene.add(allYataiGroup);
 
 const Takadai0 = makeTakadai();
-Takadai0.position.set(0,-5,100);
+Takadai0.position.set(0,0,100);
 scene.add(Takadai0);
 const Takadai1 = makeTakadai();
 Takadai1.position.set(120,-20,120)
@@ -222,16 +221,15 @@ scene.add(moon);
     new THREE.PlaneGeometry(300, 300),
     new THREE.MeshLambertMaterial({ color: 0x7d582e }));
   plane.rotation.x = -Math.PI / 2;
-  plane.position.y = -5;
   plane.receiveShadow = true; 
   scene.add(plane);
   /////////////////////////////npc1のコースの設定
   // 制御点
   const controlPoints1 = [
-    [-30, -5, 80],
-    [-30, -5, -80],
-    [-80, -5, -80],
-    [-80, -5, 80],
+    [-30, 0, 80],
+    [-30, 0, -80],
+    [-80, 0, -80],
+    [-80, 0, 80],
   ]
   // コースの補間
   const p0 = new THREE.Vector3();
@@ -250,10 +248,10 @@ scene.add(moon);
   /////////////////////////////npc2のコースの設定//////////時間があったら逆回転にする
   // 制御点
   const controlPoints2 = [
-    [30, -5, -80],
-    [30, -5, 80],
-    [80, -5, 80],
-    [80, -5, -80]
+    [30, 0, -80],
+    [30, 0, 80],
+    [80, 0, 80],
+    [80, 0, -80]
   ]
   const p2 = new THREE.Vector3();
   const p3 = new THREE.Vector3();
