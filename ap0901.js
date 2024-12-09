@@ -93,8 +93,15 @@ function init() {
   //確認したいときはこれ↓
   camera.position.set(0,30,-100);
 
-  
-  
+  const camera2 = new THREE.PerspectiveCamera(
+    50, window.innerWidth/window.innerHeight, 0.1, 1000);
+  //普段はこれ↓
+  //camera.position.set(me.position.x, me.position.y+5, me.position.z-10);
+  //確認したいときはこれ↓
+  camera2.position.set(0,0,0);
+  camera2.lookAt(0,0,5);
+  const helper = new THREE.CameraHelper( camera2 );
+  scene.add( helper );
   // レンダラの設定
   const renderer = new THREE.WebGLRenderer();
   renderer.setSize(window.innerWidth, innerHeight);
@@ -346,7 +353,7 @@ document.addEventListener('keyup', (event) => {
 // アバターを動かす関数を定義
 function moveMe() {
   const speed = 0.5; // 移動速度を調整
-  if(param.tuiseki===false){
+  //if(param.tuiseki===false){
   if (keyState.up) {
     me.position.z += speed; // 前方向に移動
   }
@@ -359,12 +366,13 @@ function moveMe() {
   if (keyState.right) {
     me.position.x -= speed; // 右方向に移動
   }
-}
+//}
 }
 
 // 回転を更新する関数
+let direction;
 function updateRotation() {
-  const direction = new THREE.Vector3();
+  direction = new THREE.Vector3();
     // キー入力に応じた方向設定
     if (keyState.up) direction.z += 1; // 前
     if (keyState.down) direction.z -= 1; // 後ろ
@@ -375,6 +383,10 @@ function updateRotation() {
       direction.normalize(); // 方向ベクトルを正規化
       const angle = Math.atan2(direction.x, direction.z); // 回転角を計算
       me.rotation.y = angle; // Y軸を中心に回転
+      camera2.position.set(me.position.x, me.position.y+5, me.position.z);
+      const camera2LA = new THREE.Vector3();
+      camera2LA.addVectors(direction, camera2.position);
+      camera2.lookAt(camera2LA);
     }
 }
 
@@ -402,30 +414,7 @@ function updateRotation() {
       scene.background = null;
       plane.visible = true;
     }
-
-    if (param.tuiseki) {
-      const faceOffset = new THREE.Vector3(me.position.x,0,me.position.z-20); // カメラのオフセット位置を調整
-      const facePosition = new THREE.Vector3().copy(faceOffset).add(faceOffset.applyQuaternion(me.quaternion));
-      camera.position.copy(facePosition);
-
-        const direction = new THREE.Vector3();
-        if (keyState.up) direction.set(0, 0, -1); // 前方
-        if (keyState.down) direction.set(0, 0, 1); // 後方
-        if (keyState.left) direction.set(-1, 0, 0); // 左
-        if (keyState.right) direction.set(1, 0, 0); // 右
-    
-        if (direction.length() > 0) {
-          direction.normalize();
-          const targetPosition = new THREE.Vector3().copy(me.position).add(direction.multiplyScalar(10)); // 向きに応じて少し前方に移動
-          camera.lookAt(targetPosition);
-        }
-      
-    }else if(param.birdsEye){
-      camera.position.set(0,300,0);//上空から
-      camera.lookAt(plane.position);//平面の中央を見る
-      camera.up.set(0,0,-1);//カメラの上をz軸負の向きにする
-    }
-    
+  
     // 影についての設定
     renderer.shadowMap.enabled = true;
     // Render関数内
@@ -436,8 +425,39 @@ function updateRotation() {
     courseObject2.visible = param.course2;
     // 座標表示の有無
     axes.visible = param.axes;
+    helper.update();
+
+
+
+ 
+    if (param.tuiseki) {
+      /*
+      const faceOffset = new THREE.Vector3();
+      if(keyState.up){
+        faceOffset.set(me.position.x,5,me.position.z-20); // カメラのオフセット位置を調整
+      }else if(keyState.down){
+        faceOffset.set(me.position.x,5,me.position.z+20);
+      }else if(keyState.left){
+        faceOffset.set(me.position.x+10,5,me.position.z);
+      }else{
+        faceOffset.set(me.position.x-10,5,me.position.z);
+      }
+      faceOffset.applyQuaternion(me.quaternion);
+      */
+      renderer.render(scene, camera2);
+    }else if(param.birdsEye){
+      camera.position.set(0,300,0);//上空から
+      camera.lookAt(plane.position);//平面の中央を見る
+      camera.up.set(0,0,1);//カメラの上をz軸負の向きにする
+      renderer.render(scene, camera);
+    }
+    else {
     // 描画
-    renderer.render(scene, camera);
+      camera.position.set(0,30,-100);
+      camera.lookAt(0,0,0);//平面の中央を見る
+      camera.up.set(0,1,0);//カメラの上をz軸負の向きにする
+      renderer.render(scene, camera);
+    }
     // 次のフレームでの描画要請
     requestAnimationFrame(render);
   }
