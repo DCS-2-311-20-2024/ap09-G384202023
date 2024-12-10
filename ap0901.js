@@ -382,6 +382,10 @@ const keyState = {
   right: false,
 };
 
+let isJumping = false;
+let jumpSpeed = 0.2; // ジャンプの速度
+let gravity = 0.02;  // 重力の影響
+
 // キーが押されたときの処理
 document.addEventListener('keydown', (event) => {
   switch (event.key) {
@@ -397,6 +401,20 @@ document.addEventListener('keydown', (event) => {
     case 'd': // 右に移動
       keyState.right = true;
       break;
+    case 'space': // スペースキーが押された時
+      if (!isJumping) {
+        isJumping = true;
+        velocityY = jumpStrength; // 上方向に力を加える
+      }
+      break;
+  }
+});
+
+// キーが押されたときにジャンプを開始
+document.addEventListener('keydown', (event) => {
+  if (event.key === ' ' && !isJumping) { // スペースキーでジャンプ
+    isJumping = true;
+    jumpSpeed = 0.3; // 初速を設定
   }
 });
 
@@ -426,6 +444,20 @@ function moveMe() {
   animateCBRobot(npc9, clock);
   
   const speed = 0.5; // 移動速度を調整
+
+  if (isJumping) {
+    me.position.y += jumpSpeed; // 上昇
+    jumpSpeed -= gravity; // 重力による減速
+
+    // 地面に戻る処理
+    if (me.position.y <= 0) {
+      me.position.y = 0;
+      isJumping = false;
+      jumpSpeed = 0; // ジャンプ終了
+    }
+  }
+
+
   const previousPosition = me.position.clone(); // 移動前の位置を保存
 
   if (keyState.up) {
