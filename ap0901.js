@@ -536,8 +536,8 @@ function updateRotation() {
 
   // 描画関数
   function render() {///////////////////////////////////render
-    moveMe(); // キー入力に応じてアバターを移動
-    updateRotation(); // アバターの向きを更新
+    moveMe();
+    updateRotation();
     // npc の位置と向きの設定
     const elapsedTime = clock.getElapsedTime() / 30;
     course1.getPointAt(elapsedTime % 1, npcPosition1);

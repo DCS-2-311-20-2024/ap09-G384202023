@@ -31,14 +31,15 @@ export function makeDensen() {
         new THREE.LineBasicMaterial({ color: "silver" })
         );
         group.add(courseObjectMR);
-        const arrowInterval = 50; // 矢印の間隔（ポイント数で指定）
+        /*
+        const arrowInterval = 50; // 矢印の間隔（作者用）
         for (let i = 0; i < pointsMR.length - arrowInterval; i += arrowInterval) {
         const start = pointsMR[i];
         const end = pointsMR[i + arrowInterval];
         const direction = new THREE.Vector3().subVectors(end, start).normalize(); // 矢印の方向
         const arrow = new THREE.ArrowHelper(direction, start, direction.length(), "green"); // 矢印の色
         group.add(arrow);
-        }
+        }*/
         return group;
     }
 
