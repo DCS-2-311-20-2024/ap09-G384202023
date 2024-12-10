@@ -25,6 +25,7 @@ function init() {
     birdsEye: false, // 俯瞰
     course1: false,//npcコース1
     course2: false,//npcコース2
+    course3: false,//npcコース3
     axes: false, // 座標軸
     freeView: true, //自由視点////変更点
   };
@@ -70,6 +71,8 @@ function init() {
   const npc5 = makeCBRobot();
   const npc6 = makeCBRobot();
   const npc7 = makeCBRobot();
+  const npc8 = makeCBRobot();
+  const npc9 = makeCBRobot();//move
   npc3.position.set(20,0,20);
   npc4.position.set(-40,0,40);
   npc5.position.set(-70,0,60);
@@ -86,6 +89,8 @@ function init() {
   allnpc.add(npc5);
   allnpc.add(npc6);
   allnpc.add(npc7);
+  allnpc.add(npc8);
+  allnpc.add(npc9);
 
   allnpc.children.forEach((child) =>{
     child.castShadow = true;
@@ -295,6 +300,27 @@ scene.add(moon);
       ];
     }).flat(), true
   )
+  /////////////////////////////npc3のコースの設定//////////時間があったら逆回転にする
+  // 制御点
+  const controlPoints3 = [
+    [20, 0, 80],
+    [20, 0, 120],
+    [-20, 0, 120],
+    [-20, 0, 80]
+  ]
+  const p4 = new THREE.Vector3();
+  const p5 = new THREE.Vector3();
+  const course3 = new THREE.CatmullRomCurve3(
+    controlPoints3.map((p, i) => {
+      p4.set(...p);
+      p5.set(...controlPoints3[(i + 1) % controlPoints3.length]);
+      return [
+        (new THREE.Vector3()).copy(p4),
+        (new THREE.Vector3()).lerpVectors(p4, p5, 1/3),
+        (new THREE.Vector3()).lerpVectors(p4, p5, 2/3),
+      ];
+    }).flat(), true
+  )
   
 ///////////////////npcend
 
@@ -305,6 +331,7 @@ scene.add(moon);
   // コースの描画
   const points1 = course1.getPoints(300);
   const points2 = course2.getPoints(300);
+  const points3 = course3.getPoints(300);
   const courseObject1 = new THREE.Line(
     new THREE.BufferGeometry().setFromPoints(points1),
     new THREE.LineBasicMaterial({ color: "red"})
@@ -313,9 +340,14 @@ scene.add(moon);
     new THREE.BufferGeometry().setFromPoints(points2),
     new THREE.LineBasicMaterial({ color: "blue"})
   );
+  const courseObject3 = new THREE.Line(
+    new THREE.BufferGeometry().setFromPoints(points3),
+    new THREE.LineBasicMaterial({ color: "green"})
+  );
   
   scene.add(courseObject1);
   scene.add(courseObject2);
+  scene.add(courseObject3);
   // Windowサイズの変更処理
   window.addEventListener("resize", ()=>{
     camera.aspect = window.innerWidth/window.innerHeight;
@@ -331,6 +363,8 @@ const clock = new THREE.Clock();
   const npcTarget1 = new THREE.Vector3();
   const npcPosition2 = new THREE.Vector3();
   const npcTarget2 = new THREE.Vector3();
+  const npcPosition3 = new THREE.Vector3();
+  const npcTarget3 = new THREE.Vector3();
 
   // キーボードの入力状態を管理するオブジェクト
 const keyState = {
@@ -381,6 +415,7 @@ function moveMe() {
   // ロボットのアニメーションを更新
   animateCBRobot(npc1, clock);
   animateCBRobot(npc2, clock);
+  animateCBRobot(npc9, clock);
   
   const speed = 0.5; // 移動速度を調整
   const previousPosition = me.position.clone(); // 移動前の位置を保存
@@ -467,12 +502,16 @@ function updateRotation() {
     const elapsedTime = clock.getElapsedTime() / 30;
     course1.getPointAt(elapsedTime % 1, npcPosition1);
     course2.getPointAt(elapsedTime % 1, npcPosition2);
+    course3.getPointAt(elapsedTime % 1, npcPosition3);
     npc1.position.copy(npcPosition1);
     npc2.position.copy(npcPosition2);
+    npc9.position.copy(npcPosition3);
     course1.getPointAt((elapsedTime+0.01) % 1, npcTarget1);
     course2.getPointAt((elapsedTime+0.01) % 1, npcTarget2);
+    course3.getPointAt((elapsedTime+0.01) % 1, npcTarget3);
     npc1.lookAt(npcTarget1);
     npc2.lookAt(npcTarget2);
+    npc9.lookAt(npcTarget3);
     // 背景の切り替え
     if(param.background) {
       scene.background = renderTarget.texture;
@@ -490,6 +529,7 @@ function updateRotation() {
     // コース表示の有無
     courseObject1.visible = param.course1;
     courseObject2.visible = param.course2;
+    courseObject3.visible = param.course3;
     // 座標表示の有無
     axes.visible = param.axes;
     helper.update();
