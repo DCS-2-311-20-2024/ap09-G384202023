@@ -9,13 +9,9 @@ import * as THREE from "three";
 import { GUI } from "ili-gui";
 import {OrbitControls} from "three/addons";
 import { makeCBRobot } from './myavatar.js';
-import { makeme } from './makeme.js';
-import { animateMyRobot } from './makeme.js';
+import { makeme,  animateMyRobot} from './makeme.js';
 import { animateCBRobot } from './myavatar.js';
-import { makeFishYatai } from './building.js';
-import { makeFoodYatai } from './building.js';
-import { makeGunYatai } from './building.js';
-import { makeTakadai } from './building.js';
+import { makeBasicYatai, makeFishYatai, makeFoodYatai, makeGunYatai,  makeTakadai} from './building.js';
 import { makeDensen } from './densen.js';
 //import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
 
@@ -37,10 +33,10 @@ function init() {
   const gui = new GUI();
   gui.add(param, "background").name("背景(床が映らない)");
   gui.add(param, "tuiseki").name("一人称視点(追跡)");
-  gui.add(param, "fps").name("FPS");
+  //gui.add(param, "fps").name("FPS");
   gui.add(param, "birdsEye").name("俯瞰");
-  gui.add(param, "course1").name("コース1");
-  gui.add(param, "course2").name("コース2");
+  //gui.add(param, "course1").name("コース1");
+  //gui.add(param, "course2").name("コース2");
   gui.add(param, "axes").name("座標軸");
   gui.add(param, "freeView").name("自由視点原点(製作者確認用)");////変更点
 
@@ -67,8 +63,8 @@ function init() {
   scene.add(me);
 
   const allnpc = new THREE.Group();
-  const npc1 = makeCBRobot();
-  const npc2 = makeCBRobot();
+  const npc1 = makeCBRobot();//move
+  const npc2 = makeCBRobot();//move
   const npc3 = makeCBRobot();
   const npc4 = makeCBRobot();
   const npc5 = makeCBRobot();
@@ -157,7 +153,6 @@ function init() {
   }
 
   // 構造物の作成 meshlambertの関係でこれしか建物が建てられない。
-  // 多分紅白のついてるやつは無理なだけかも。
 const allYataiGroup = new THREE.Group();
 const FishYatai1 = makeFishYatai();
 FishYatai1.position.set(-35, 0, -30);
@@ -184,6 +179,20 @@ const GunYatai2 = makeGunYatai();
 GunYatai2.position.set(35, 0, 0);
 GunYatai2.rotation.y = -Math.PI / 2;
 allYataiGroup.add(GunYatai2);
+/*
+const BasicYatai1 = makeBasicYatai();
+BasicYatai1.position.set(-70, 0, -30);
+BasicYatai1.rotation.y = Math.PI / 2;
+allYataiGroup.add(BasicYatai1);
+const BasicYatai2 = makeBasicYatai();
+BasicYatai2.position.set(-70, 0, 0);
+BasicYatai2.rotation.y = Math.PI / 2;
+allYataiGroup.add(BasicYatai2);
+const BasicYatai3 = makeBasicYatai();
+BasicYatai3.position.set(-70, 0, 30);
+BasicYatai3.rotation.y = Math.PI / 2;
+allYataiGroup.add(BasicYatai3);
+*/
 
 //allYataiGroup.scale.set(1.5, 1.5, 1.5);
 allYataiGroup.children.forEach((child) =>{
