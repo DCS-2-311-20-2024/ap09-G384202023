@@ -7,11 +7,11 @@
 // ライブラリをモジュールとして読み込む
 import * as THREE from "three";
 import { GUI } from "ili-gui";
-import {OrbitControls} from "three/addons";
+import { OrbitControls } from "three/addons";
 import { makeCBRobot } from './myavatar.js';
 import { makeme,  animateMyRobot} from './makeme.js';
 import { animateCBRobot } from './myavatar.js';
-import { makeBasicYatai, makeFishYatai, makeFoodYatai, makeGunYatai,  makeTakadai} from './building.js';
+import { makeFishYatai, makeFoodYatai, makeGunYatai,  makeTakadai} from './building.js';
 import { makeDensen } from './densen.js';
 //import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
 
@@ -109,6 +109,7 @@ function init() {
   //普段はこれ↓
   camera.position.set(me.position.x, me.position.y+10, me.position.z-20);
   //確認したいときはこれ↓
+  //camera.position.set(0, 10, -20);
   const camera2 = new THREE.PerspectiveCamera(
     50, window.innerWidth/window.innerHeight, 0.1, 1000);
   camera2.position.set(0,0,0);
@@ -169,7 +170,7 @@ FoodYatai1.rotation.y = Math.PI / 2;
 allYataiGroup.add(FoodYatai1);
 const GunYatai1 = makeGunYatai();
 GunYatai1.position.set(-35, 0, 30);
-GunYatai1.rotation.y = Math.PI / 2;
+GunYatai1.rotation.y = Math.PI/2;
 allYataiGroup.add(GunYatai1);
 
 const FishYatai2 = makeFishYatai();
@@ -184,20 +185,6 @@ const GunYatai2 = makeGunYatai();
 GunYatai2.position.set(35, 0, 0);
 GunYatai2.rotation.y = -Math.PI / 2;
 allYataiGroup.add(GunYatai2);
-/*
-const BasicYatai1 = makeBasicYatai();
-BasicYatai1.position.set(-70, 0, -30);
-BasicYatai1.rotation.y = Math.PI / 2;
-allYataiGroup.add(BasicYatai1);
-const BasicYatai2 = makeBasicYatai();
-BasicYatai2.position.set(-70, 0, 0);
-BasicYatai2.rotation.y = Math.PI / 2;
-allYataiGroup.add(BasicYatai2);
-const BasicYatai3 = makeBasicYatai();
-BasicYatai3.position.set(-70, 0, 30);
-BasicYatai3.rotation.y = Math.PI / 2;
-allYataiGroup.add(BasicYatai3);
-*/
 
 //allYataiGroup.scale.set(1.5, 1.5, 1.5);
 allYataiGroup.children.forEach((child) =>{
