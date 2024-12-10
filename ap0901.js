@@ -10,6 +10,8 @@ import { GUI } from "ili-gui";
 import {OrbitControls} from "three/addons";
 import { makeCBRobot } from './myavatar.js';
 import { makeme } from './makeme.js';
+import { animateMyRobot } from './makeme.js';
+import { animateCBRobot } from './myavatar.js';
 import { makeFishYatai } from './building.js';
 import { makeFoodYatai } from './building.js';
 import { makeGunYatai } from './building.js';
@@ -314,7 +316,7 @@ scene.add(moon);
 
   // 描画処理
   // 描画のための変数
-  const clock = new THREE.Clock();
+const clock = new THREE.Clock();
 
   const npcPosition1 = new THREE.Vector3();
   const npcTarget1 = new THREE.Vector3();
@@ -367,6 +369,10 @@ document.addEventListener('keyup', (event) => {
 
 // アバターを動かす関数を定義
 function moveMe() {
+  // ロボットのアニメーションを更新
+  animateCBRobot(npc1, clock);
+  animateCBRobot(npc2, clock);
+  
   const speed = 0.5; // 移動速度を調整
   const previousPosition = me.position.clone(); // 移動前の位置を保存
 
@@ -383,6 +389,18 @@ function moveMe() {
     me.position.x -= speed; // 右方向に移動
   }
 
+  let isMoving = false; // ロボットの移動状態
+  // 現在の位置と前の位置を比較
+  const currentPosition = me.position;
+  isMoving = !currentPosition.equals(previousPosition);
+
+  // ロボットが進んでいる場合にアニメーションを実行
+  if (isMoving) {
+      animateMyRobot(me, clock);
+  }
+
+  // 前の位置を更新
+  previousPosition.copy(currentPosition);
   // アバターの境界ボックスを更新
   meBoundingBox.setFromObject(me);
 

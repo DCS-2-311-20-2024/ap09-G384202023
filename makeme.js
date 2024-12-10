@@ -142,7 +142,8 @@ export function makeme() {
     head.position.y = legLen*1.3+bodyH;////////////////
     cardboardRobot.add(head);
 
-   
+       // 動くパーツを管理するためのオブジェクトを追加
+  cardboardRobot.userData = { legR, legL, armR, armL };
   
   
     // 影についての設定
@@ -153,4 +154,21 @@ export function makeme() {
   
     // 再生結果を戻す
     return cardboardRobot;
+}
+export function animateMyRobot(robot, clock) {
+  const time = clock.getElapsedTime(); // 経過時間を取得
+
+  const amplitude = 0.5; // モーションの振幅
+  const speed = 6; // モーションの速さ
+
+  // 脚と腕を動かす
+  const { legR, legL, armR, armL } = robot.userData;
+
+  // 脚の前後の動き
+  legR.rotation.x = Math.sin(time * speed) * amplitude;
+  legL.rotation.x = -Math.sin(time * speed) * amplitude;
+
+  // 腕の前後の動き (脚と逆方向)
+  armR.rotation.x = -Math.sin(time * speed) * amplitude;
+  armL.rotation.x = Math.sin(time * speed) * amplitude;
 }

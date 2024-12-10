@@ -90,7 +90,7 @@ export function makeCBRobot() {
     triangleGeometry.setAttribute('position',
       new THREE.BufferAttribute(triangleVertices,3));
     body.add(new THREE.Mesh(triangleGeometry,blackMaterial));
-  
+
   
     head.children.forEach((child) =>{
       child.castShadow = true;
@@ -100,7 +100,8 @@ export function makeCBRobot() {
     head.position.y = legLen*1.3+bodyH;////////////////
     cardboardRobot.add(head);
 
-   
+       // 動くパーツを管理するためのオブジェクトを追加
+  cardboardRobot.userData = { legR, legL, armR, armL };
   
   
     // 影についての設定
@@ -111,4 +112,21 @@ export function makeCBRobot() {
   
     // 再生結果を戻す
     return cardboardRobot;
+}
+export function animateCBRobot(robot, clock) {
+  const time = clock.getElapsedTime(); // 経過時間を取得
+
+  const amplitude = 0.5; // モーションの振幅
+  const speed = 5; // モーションの速さ
+
+  // 脚と腕を動かす
+  const { legR, legL, armR, armL } = robot.userData;
+
+  // 脚の前後の動き
+  legR.rotation.x = Math.sin(time * speed) * amplitude;
+  legL.rotation.x = -Math.sin(time * speed) * amplitude;
+
+  // 腕の前後の動き (脚と逆方向)
+  armR.rotation.x = -Math.sin(time * speed) * amplitude;
+  armL.rotation.x = Math.sin(time * speed) * amplitude;
 }
