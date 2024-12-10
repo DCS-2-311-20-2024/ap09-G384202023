@@ -39,7 +39,7 @@ function init() {
   //gui.add(param, "course1").name("コース1");
   //gui.add(param, "course2").name("コース2");
   gui.add(param, "axes").name("座標軸");
-  gui.add(param, "freeView").name("自由視点原点(製作者確認用)");////変更点
+  gui.add(param, "freeView").name("自由視点(原点)");////変更点
 
   // シーン作成
   const scene = new THREE.Scene();
