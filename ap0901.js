@@ -73,15 +73,30 @@ function init() {
   const npc7 = makeCBRobot();
   const npc8 = makeCBRobot();
   const npc9 = makeCBRobot();//move
+  const npc10 = makeCBRobot();
+  const npc11 = makeCBRobot();
+  const npc12 = makeCBRobot();
+  const npc13 = makeCBRobot();
+  const npc14 = makeCBRobot();
   npc3.position.set(20,0,20);
   npc4.position.set(-40,0,40);
   npc5.position.set(-70,0,60);
   npc6.position.set(40,0,45);
   npc7.position.set(120,0,80);
+  npc10.position.set(-120,0,80);
+  npc11.position.set(-130,0,80);
+  npc12.position.set(-120,0,-80);
+  npc13.position.set(-130,0,-80);
+  npc14.position.set(120,0,80);
   npc3.rotation.set(0,Math.PI/4,0);
   npc4.rotation.set(0,-Math.PI/6,0);
   npc5.rotation.set(0,0,0);
   npc6.rotation.set(0,Math.PI/2,0);
+  npc10.rotation.set(0,-Math.PI/2,0);
+  npc11.rotation.set(0,Math.PI/2,0);
+  npc12.rotation.set(0,Math.PI,0);
+  npc13.rotation.set(0,Math.PI,0);
+  npc14.rotation.set(0,0,0);
   allnpc.add(npc1);
   allnpc.add(npc2);
   allnpc.add(npc3);
@@ -91,6 +106,11 @@ function init() {
   allnpc.add(npc7);
   allnpc.add(npc8);
   allnpc.add(npc9);
+  allnpc.add(npc10);
+  allnpc.add(npc11);
+  allnpc.add(npc12);
+  allnpc.add(npc13);
+  allnpc.add(npc14);
 
   allnpc.children.forEach((child) =>{
     child.castShadow = true;

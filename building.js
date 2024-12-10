@@ -6,8 +6,7 @@
 import * as THREE from "three";
 import { setKeihin } from './keihin.js';
 import { makeCBRobot } from './myavatar.js';
-const seg = 12; // 円や円柱の分割数
-const gap = 0.01; // 胸のマークなどを浮かせる高さ
+//const seg = 12; // 円や円柱の分割数//const gap = 0.01; // 胸のマークなどを浮かせる高さ
 
 //屋台
 export function makeBasicYatai() {
