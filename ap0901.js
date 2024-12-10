@@ -313,6 +313,7 @@ scene.add(moon);
 
   // 電線
   const densen = makeDensen();
+  densen.position.y = 5;
   scene.add(densen);
 
   // コースの描画
